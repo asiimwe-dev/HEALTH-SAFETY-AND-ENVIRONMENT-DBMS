@@ -36,6 +36,27 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
 
+/*
+ * ═══════════════════════════════════════════════════════
+ *  COLOUR TOKENS  —  Slate "dim mode"
+ *  Base sits at slate-750 (~#1e2433), surfaces step up
+ *  in 10-15 L* increments. Feels neither white-room nor
+ *  cave: readable all day without eye strain.
+ * ═══════════════════════════════════════════════════════
+ *  --bg-base      #1a1f2e   app canvas
+ *  --bg-surface   #212736   cards, sidebar
+ *  --bg-raised    #2a3044   inputs, expanders, metrics
+ *  --bg-hover     #303650   hover / focus rings
+ *  --border       #353d52   default borders
+ *  --border-light #2a3044   subtle separators
+ *  --text-primary #e2e6f0   headings, strong labels
+ *  --text-body    #9ca8bf   body copy, descriptions
+ *  --text-muted   #5c6880   placeholders, footers
+ *  --accent       #6366f1   indigo primary
+ *  --accent-dim   #4f52c9   accent pressed state
+ * ═══════════════════════════════════════════════════════
+ */
+
 /* ── Reset & base ─────────────────────────────────────── */
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
@@ -44,7 +65,7 @@ html, body, [class*="css"] {
 
 /* ── App background ───────────────────────────────────── */
 [data-testid="stAppViewContainer"] {
-    background: #09090f;
+    background: #1a1f2e;
 }
 [data-testid="block-container"] {
     padding-top: 1.8rem;
@@ -54,13 +75,13 @@ html, body, [class*="css"] {
 
 /* ── Sidebar / Drawer ─────────────────────────────────── */
 [data-testid="stSidebar"] {
-    background: #0e0e18;
-    border-right: 1px solid #1e1e2e;
+    background: #1e2436;
+    border-right: 1px solid #2e3650;
     min-width: 240px !important;
     max-width: 240px !important;
 }
 [data-testid="stSidebar"] * {
-    color: #a8a8c0 !important;
+    color: #8a96ae !important;
 }
 
 /* Hide default radio styling completely */
@@ -77,21 +98,21 @@ html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
-    color: #7070a0 !important;
+    color: #6e7d9a !important;
     transition: background 0.18s ease, color 0.18s ease;
     border: none;
     margin: 1px 0;
     white-space: nowrap;
 }
 [data-testid="stSidebar"] .stRadio label:hover {
-    background: rgba(99, 102, 241, 0.1);
-    color: #e0e0f0 !important;
+    background: rgba(99, 102, 241, 0.12);
+    color: #c8d0e4 !important;
 }
 [data-testid="stSidebar"] .stRadio label[data-checked="true"],
 [data-testid="stSidebar"] .stRadio label:has(input:checked) {
-    background: rgba(99, 102, 241, 0.15);
-    color: #a78bfa !important;
-    border-left: 2px solid #7c3aed;
+    background: rgba(99, 102, 241, 0.16);
+    color: #a5b4fc !important;
+    border-left: 2px solid #6366f1;
 }
 [data-testid="stSidebar"] .stRadio input[type="radio"] {
     display: none !important;
@@ -102,7 +123,7 @@ h1 {
     font-family: 'Syne', sans-serif !important;
     font-weight: 800 !important;
     font-size: 1.9rem !important;
-    color: #f0f0ff !important;
+    color: #e2e6f0 !important;
     letter-spacing: -0.02em;
     line-height: 1.2;
 }
@@ -110,7 +131,7 @@ h2 {
     font-family: 'DM Sans', sans-serif !important;
     font-weight: 600 !important;
     font-size: 1.05rem !important;
-    color: #d0d0e8 !important;
+    color: #c8d0e4 !important;
     letter-spacing: 0.03em;
     text-transform: uppercase;
 }
@@ -118,18 +139,18 @@ h3 {
     font-family: 'DM Sans', sans-serif !important;
     font-weight: 600 !important;
     font-size: 0.9rem !important;
-    color: #b0b0cc !important;
+    color: #aab4cc !important;
 }
 p, li, .stMarkdown {
-    color: #8080a8;
+    color: #8a96ae;
     font-size: 0.9rem;
     line-height: 1.65;
 }
 
 /* ── KPI Cards ────────────────────────────────────────── */
 .kpi-card {
-    background: linear-gradient(145deg, #12121e 0%, #0e0e18 100%);
-    border: 1px solid #1e1e30;
+    background: linear-gradient(145deg, #242a3d 0%, #1e2436 100%);
+    border: 1px solid #2e3650;
     border-radius: 12px;
     padding: 1.4rem 1.6rem;
     position: relative;
@@ -141,18 +162,18 @@ p, li, .stMarkdown {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #7c3aed, #4f46e5);
+    background: linear-gradient(90deg, #6366f1, #818cf8);
     border-radius: 12px 12px 0 0;
 }
 .kpi-card:hover {
-    border-color: #2e2e50;
+    border-color: #3d4a66;
     transform: translateY(-1px);
 }
 .kpi-card .kpi-value {
     font-family: 'DM Mono', monospace;
     font-size: 2.2rem;
     font-weight: 500;
-    color: #a78bfa;
+    color: #a5b4fc;
     line-height: 1;
     letter-spacing: -0.02em;
 }
@@ -160,25 +181,24 @@ p, li, .stMarkdown {
     font-size: 0.72rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #5050780;
     margin-top: 0.45rem;
-    color: #60607a;
+    color: #5c6880;
     font-weight: 600;
 }
 .kpi-card .kpi-sub {
     font-family: 'DM Mono', monospace;
     font-size: 0.76rem;
-    color: #4f46e5;
+    color: #818cf8;
     margin-top: 0.4rem;
 }
 .kpi-card-alert::before {
-    background: linear-gradient(90deg, #ef4444, #dc2626);
+    background: linear-gradient(90deg, #f87171, #ef4444);
 }
-.kpi-card-alert .kpi-value { color: #f87171; }
+.kpi-card-alert .kpi-value { color: #fca5a5; }
 
 /* ── Section Headers ─────────────────────────────────── */
 .section-header {
-    border-left: 3px solid #7c3aed;
+    border-left: 3px solid #6366f1;
     padding-left: 1rem;
     margin: 2rem 0 1rem 0;
 }
@@ -187,12 +207,12 @@ p, li, .stMarkdown {
     letter-spacing: 0.12em !important;
     text-transform: uppercase !important;
     margin: 0;
-    color: #9090b8 !important;
+    color: #8a96ae !important;
 }
 .section-header p {
     font-size: 0.8rem;
     margin: 0.2rem 0 0 0;
-    color: #50506e;
+    color: #4e5c78;
 }
 
 /* ── Page title block ─────────────────────────────────── */
@@ -203,7 +223,7 @@ p, li, .stMarkdown {
     font-size: 0.7rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #7c3aed;
+    color: #818cf8;
     font-weight: 600;
     font-family: 'DM Mono', monospace;
     margin-bottom: 0.3rem;
@@ -213,14 +233,14 @@ p, li, .stMarkdown {
 }
 .page-title-block .page-subtitle {
     font-size: 0.88rem;
-    color: #50506e;
+    color: #5c6880;
     margin: 0;
 }
 
 /* ── Divider ──────────────────────────────────────────── */
 hr {
     border: none;
-    border-top: 1px solid #1a1a28;
+    border-top: 1px solid #2a3248;
     margin: 1.4rem 0;
 }
 
@@ -230,9 +250,9 @@ hr {
 .stSelectbox div[data-baseweb="select"],
 .stDateInput input,
 .stTimeInput input {
-    background: #12121e !important;
-    border: 1px solid #22223a !important;
-    color: #c0c0d8 !important;
+    background: #252c3f !important;
+    border: 1px solid #353d52 !important;
+    color: #c8d0e4 !important;
     border-radius: 8px !important;
     font-family: 'DM Sans', sans-serif !important;
     font-size: 0.88rem !important;
@@ -240,21 +260,20 @@ hr {
 }
 .stTextInput input:focus,
 .stTextArea textarea:focus {
-    border-color: #7c3aed !important;
-    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.12) !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
 }
 label[data-testid="stWidgetLabel"] {
     font-size: 0.78rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
-    color: #6060808 !important;
     text-transform: uppercase;
-    color: #60607a !important;
+    color: #5c6880 !important;
 }
 
 /* ── Buttons ──────────────────────────────────────────── */
 .stButton > button {
-    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    background: linear-gradient(135deg, #6366f1, #4f52c9);
     color: #ffffff;
     font-family: 'DM Sans', sans-serif;
     font-weight: 600;
@@ -264,12 +283,12 @@ label[data-testid="stWidgetLabel"] {
     border-radius: 8px;
     padding: 0.6rem 1.8rem;
     transition: opacity 0.2s, transform 0.15s;
-    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
 }
 .stButton > button:hover {
     opacity: 0.9;
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
 }
 .stButton > button:active {
     transform: translateY(0);
@@ -277,75 +296,75 @@ label[data-testid="stWidgetLabel"] {
 
 /* ── DataFrames ───────────────────────────────────────── */
 [data-testid="stDataFrame"] {
-    border: 1px solid #1a1a28 !important;
+    border: 1px solid #2e3650 !important;
     border-radius: 10px !important;
     overflow: hidden;
 }
 
 /* ── Metrics ──────────────────────────────────────────── */
 [data-testid="metric-container"] {
-    background: #12121e;
-    border: 1px solid #1e1e30;
+    background: #242a3d;
+    border: 1px solid #2e3650;
     border-radius: 10px;
     padding: 1rem 1.2rem;
 }
 [data-testid="metric-container"] label {
     font-size: 0.7rem !important;
-    color: #50507a !important;
+    color: #5c6880 !important;
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
 [data-testid="metric-container"] [data-testid="stMetricValue"] {
     font-family: 'DM Mono', monospace;
     font-size: 1.5rem;
-    color: #a78bfa !important;
+    color: #a5b4fc !important;
 }
 
 /* ── Alerts / Info / Warning ──────────────────────────── */
 .stAlert {
     border-radius: 10px !important;
     border-left-width: 3px !important;
-    background: #12121e !important;
+    background: #242a3d !important;
 }
 
 /* ── Expander ─────────────────────────────────────────── */
 details {
-    background: #12121e;
-    border: 1px solid #1e1e30;
+    background: #242a3d;
+    border: 1px solid #2e3650;
     border-radius: 8px;
     padding: 0.3rem 0.5rem;
 }
 details summary {
     font-size: 0.83rem;
-    color: #7070a0;
+    color: #6e7d9a;
     font-family: 'DM Mono', monospace;
 }
 
 /* ── Sidebar brand block ──────────────────────────────── */
 .sidebar-brand {
     padding: 1.6rem 1rem 1.2rem;
-    border-bottom: 1px solid #1a1a28;
+    border-bottom: 1px solid #2a3248;
     margin-bottom: 0.8rem;
 }
 .sidebar-brand .brand-icon {
     width: 36px; height: 36px;
-    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    background: linear-gradient(135deg, #6366f1, #4f52c9);
     border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.1rem;
     margin-bottom: 0.6rem;
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
 }
 .sidebar-brand .brand-name {
     font-family: 'Syne', sans-serif;
     font-size: 1.05rem;
     font-weight: 800;
-    color: #e0e0f0 !important;
+    color: #dce2f0 !important;
     letter-spacing: -0.01em;
 }
 .sidebar-brand .brand-sub {
     font-size: 0.68rem;
-    color: #40406a !important;
+    color: #4e5c78 !important;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-top: 2px;
@@ -358,7 +377,7 @@ details summary {
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #303050 !important;
+    color: #3d4a66 !important;
     padding: 1rem 14px 0.4rem;
     font-family: 'DM Mono', monospace;
 }
@@ -366,12 +385,12 @@ details summary {
 /* ── Sidebar footer ───────────────────────────────────── */
 .sidebar-footer {
     padding: 1rem 14px 0.5rem;
-    border-top: 1px solid #1a1a28;
+    border-top: 1px solid #2a3248;
     margin-top: 1rem;
 }
 .sidebar-footer .footer-text {
     font-size: 0.66rem;
-    color: #303050 !important;
+    color: #3d4a66 !important;
     line-height: 1.8;
     font-family: 'DM Mono', monospace;
 }
@@ -382,16 +401,16 @@ details summary {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #09090f;
+    background: #1a1f2e;
 }
 .login-card {
-    background: linear-gradient(160deg, #0e0e1a 0%, #0b0b14 100%);
-    border: 1px solid #1e1e30;
+    background: linear-gradient(160deg, #1e2436 0%, #1a2030 100%);
+    border: 1px solid #2e3650;
     border-radius: 20px;
     padding: 3rem 2.8rem 2.5rem;
     width: 100%;
     max-width: 420px;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124,58,237,0.1);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(99,102,241,0.12);
     position: relative;
     overflow: hidden;
 }
@@ -400,7 +419,7 @@ details summary {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #7c3aed, #4f46e5, #6366f1);
+    background: linear-gradient(90deg, #6366f1, #818cf8, #a5b4fc);
 }
 .login-logo-area {
     text-align: center;
@@ -408,26 +427,26 @@ details summary {
 }
 .login-logo-icon {
     width: 56px; height: 56px;
-    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    background: linear-gradient(135deg, #6366f1, #4f52c9);
     border-radius: 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 1.6rem;
     margin-bottom: 1rem;
-    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
 }
 .login-title {
     font-family: 'Syne', sans-serif !important;
     font-size: 1.55rem !important;
     font-weight: 800 !important;
-    color: #f0f0ff !important;
+    color: #e2e6f0 !important;
     letter-spacing: -0.02em;
     margin: 0 !important;
 }
 .login-subtitle {
     font-size: 0.8rem;
-    color: #40406a;
+    color: #4e5c78;
     margin-top: 0.3rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -454,21 +473,21 @@ details summary {
 
 /* ── Alert banner ─────────────────────────────────────── */
 .alert-banner {
-    background: rgba(239,68,68,0.06);
-    border: 1px solid rgba(239,68,68,0.2);
-    border-left: 3px solid #ef4444;
+    background: rgba(248, 113, 113, 0.06);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    border-left: 3px solid #f87171;
     border-radius: 10px;
     padding: 1rem 1.2rem;
     margin-bottom: 1rem;
 }
 .alert-banner .alert-title {
     font-weight: 600;
-    color: #f87171;
+    color: #fca5a5;
     font-size: 0.88rem;
     margin-bottom: 0.2rem;
 }
 .alert-banner .alert-body {
-    color: #70706a;
+    color: #6e7d9a;
     font-size: 0.82rem;
 }
 
@@ -479,7 +498,7 @@ details summary {
     justify-content: space-between;
     padding: 0 0 1.2rem 0;
     margin-bottom: 0.5rem;
-    border-bottom: 1px solid #1a1a28;
+    border-bottom: 1px solid #2a3248;
 }
 .topbar-right {
     display: flex;
@@ -488,7 +507,7 @@ details summary {
 }
 .topbar-user {
     font-size: 0.78rem;
-    color: #50507a;
+    color: #4e5c78;
     font-family: 'DM Mono', monospace;
 }
 .online-dot {
@@ -497,29 +516,29 @@ details summary {
     border-radius: 50%;
     display: inline-block;
     margin-right: 5px;
-    box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.4);
 }
 
 /* ── Logout button override ───────────────────────────── */
 .logout-btn > button {
     background: transparent !important;
-    border: 1px solid #2a2a40 !important;
-    color: #70707a !important;
+    border: 1px solid #353d52 !important;
+    color: #6e7d9a !important;
     font-size: 0.75rem !important;
     padding: 0.35rem 1rem !important;
     box-shadow: none !important;
 }
 .logout-btn > button:hover {
-    border-color: #ef4444 !important;
-    color: #f87171 !important;
-    background: rgba(239,68,68,0.06) !important;
+    border-color: #f87171 !important;
+    color: #fca5a5 !important;
+    background: rgba(248, 113, 113, 0.07) !important;
     transform: none !important;
 }
 
 /* ── Form container ───────────────────────────────────── */
 .form-section {
-    background: #0e0e18;
-    border: 1px solid #1a1a28;
+    background: #1e2436;
+    border: 1px solid #2e3650;
     border-radius: 12px;
     padding: 1.5rem 1.6rem;
     margin-bottom: 1rem;
@@ -527,9 +546,9 @@ details summary {
 
 /* ── Scrollbar ────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0e0e18; }
-::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #3a3a58; }
+::-webkit-scrollbar-track { background: #1a1f2e; }
+::-webkit-scrollbar-thumb { background: #353d52; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4a5470; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -603,13 +622,13 @@ def render_login():
 
         st.markdown("""
         <div style='text-align:center; margin-top:1.8rem; padding-top:1.4rem; 
-             border-top: 1px solid #1a1a28;'>
-            <div style='font-size:0.68rem; color:#30304a; font-family: DM Mono, monospace; 
+             border-top: 1px solid #2a3248;'>
+            <div style='font-size:0.68rem; color:#3d4a66; font-family: DM Mono, monospace; 
                  line-height:1.9; letter-spacing:0.04em;'>
                 HSE DATABASE MANAGEMENT SYSTEM<br>
                 Tilenga · Kingfisher · EACOP Operations<br>
                 Albertine Graben · Uganda<br>
-                <span style='color:#1e1e36;'>Authorised personnel only · v2.0</span>
+                <span style='color:#2e3a54;'>Authorised personnel only · v2.0</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -628,11 +647,11 @@ DB_CONFIG = {
 
 # Shared Plotly theme
 CHART_LAYOUT = dict(
-    font=dict(family="DM Sans", color="#60607a", size=11),
+    font=dict(family="DM Sans", color="#6e7d9a", size=11),
     paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="#0e0e18",
-    xaxis=dict(gridcolor="#18182a", linecolor="#1e1e30", showgrid=True, tickfont=dict(size=10)),
-    yaxis=dict(gridcolor="#18182a", linecolor="#1e1e30", showgrid=True, tickfont=dict(size=10)),
+    plot_bgcolor="#1e2436",
+    xaxis=dict(gridcolor="#2a3248", linecolor="#353d52", showgrid=True, tickfont=dict(size=10)),
+    yaxis=dict(gridcolor="#2a3248", linecolor="#353d52", showgrid=True, tickfont=dict(size=10)),
     margin=dict(l=40, r=20, t=40, b=40),
 )
 
@@ -730,11 +749,11 @@ with st.sidebar:
 
     st.markdown(f"""
     <div style='padding: 8px 14px;'>
-        <div style='font-size:0.72rem; color:#40406a; font-family: DM Mono, monospace; 
+        <div style='font-size:0.72rem; color:#4e5c78; font-family: DM Mono, monospace; 
              line-height:1.9; margin-bottom: 0.4rem;'>
-            <span style='color:#5050780; display:block; margin-bottom:3px;'>SIGNED IN AS</span>
-            <span style='color:#7070a0;'>{st.session_state.current_user}</span><br>
-            <span style='color:#30305a; font-size:0.65rem;'>{st.session_state.user_role}</span>
+            <span style='color:#3d4a66; display:block; margin-bottom:3px;'>SIGNED IN AS</span>
+            <span style='color:#8a96ae;'>{st.session_state.current_user}</span><br>
+            <span style='color:#4e5c78; font-size:0.65rem;'>{st.session_state.user_role}</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -915,7 +934,7 @@ if "Dashboard" in page:
             )
             fig2.update_traces(
                 textposition="outside", textfont_size=10,
-                marker=dict(line=dict(color="#09090f", width=2)),
+                marker=dict(line=dict(color="#1a1f2e", width=2)),
             )
             st.plotly_chart(fig2, use_container_width=True)
 
@@ -1328,6 +1347,6 @@ ORDER BY e.last_name, et.expiry_date;
                 **CHART_LAYOUT,
                 coloraxis_showscale=False,
                 height=380,
-                xaxis=dict(range=[0, 115], gridcolor="#18182a"),
+                xaxis=dict(range=[0, 115], gridcolor="#2a3248"),
             )
             st.plotly_chart(fig4, use_container_width=True)
