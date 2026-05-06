@@ -11,7 +11,7 @@
 ---
 
 ## 📄 Executive Summary
-The **Health, Safety, and Environment (HSE) DBMS** is a production-grade database management system engineered to oversee HSE operations within Uganda's burgeoning oil and gas sector. Specifically designed for the **Albertine Graben** (Tilenga, Kingfisher, and EACOP projects), the system provides a centralized platform for real-time monitoring of safety metrics, incident management, and regulatory compliance.
+The **Health, Safety, and Environment (HSE) DBMS** is a production-grade database management system engineered to oversee HSE operations within Uganda's burgeoning oil and gas sector. Specifically designed for the **Albertine Graben** (Tilenga, Kingfisher, and EACOP projects), the system provides a centralized platform for secure, real-time monitoring of safety metrics, incident management, and regulatory compliance.
 
 ## 🎯 Project Role: Problem & Solution
 
@@ -19,7 +19,7 @@ The **Health, Safety, and Environment (HSE) DBMS** is a production-grade databas
 Managing HSE data in multi-site, high-risk oil and gas operations often suffers from fragmented tracking, delayed incident reporting, and certification lapses. These inefficiencies increase the risk of workplace accidents and lead to non-compliance with stringent regulatory standards (NEMA, PAU, OPITO), potentially resulting in heavy fines and operational shutdowns.
 
 ### The Solution
-This DBMS provides an integrated digital solution that automates the tracking of personnel, incidents, and training certifications. By centralizing data into a high-performance, interactive dashboard, it empowers safety officers with real-time insights, automated expiry alerts, and comprehensive audit trails, ensuring that all operations meet both local and international safety benchmarks.
+This DBMS provides an integrated digital solution that automates the tracking of personnel, incidents, and training certifications. By centralizing data into a high-performance, interactive dashboard protected by secure authentication, it empowers safety officers with real-time insights, automated expiry alerts, and comprehensive audit trails.
 
 ## 🛠 Tech Stack & Implementation
 
@@ -32,8 +32,8 @@ This DBMS provides an integrated digital solution that automates the tracking of
 ### Implementation Highlights
 - **Normalized Schema:** 7+ tables with M:N relationships for robust data integrity.
 - **Performance Optimized:** 20+ database indexes ensuring sub-50ms query response times.
-- **Responsive Design:** Mobile-first architecture with semantic CSS variables.
-- **Secure Integration:** Environment-based configuration for sensitive database credentials.
+- **Role-Based Access Control:** Secure login system with differentiated permissions for administrators and safety officers.
+- **Responsive Design:** Mobile-first architecture with semantic CSS variables and premium typography.
 
 ## 🚀 Getting Started
 
@@ -75,6 +75,15 @@ pip install -r files/requirements.txt
 streamlit run files/app.py
 ```
 
+## 🔐 Access & Security
+The system requires authentication to access the management dashboard. For development and testing purposes, the following demo credentials are provided:
+
+| Role | Username | Password |
+| :--- | :--- | :--- |
+| **HSE Administrator** | `admin` | `admin123` |
+| **HSE Manager** | `gilbert` | `hse2025` |
+| **Field Safety Officer** | `field_ops` | `ops2025` |
+
 ## 📂 Project Layout
 ```text
 ├── docs/                # Technical documentation and deployment guides
@@ -98,8 +107,5 @@ Contributions are welcome and greatly appreciated! To contribute:
 4. **Push** to the branch (`git push origin feature/AmazingFeature`).
 5. **Open** a Pull Request.
 
-Please ensure your code adheres to the project's coding standards and includes appropriate documentation or tests.
-
 ---
 **Maintained by:** [Gilbert Asiimwe](https://github.com/asiimwe-dev) | Mbarara University of Science and Technology
-

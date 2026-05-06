@@ -23,7 +23,7 @@ import streamlit as st
 #  PAGE CONFIG — must be first Streamlit call
 # ======================================================================
 st.set_page_config(
-    page_title="HSE Command | Uganda O&G",
+    page_title="Health, Safety & Environment System | Uganda O&G",
     page_icon="🛡",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -34,7 +34,7 @@ st.set_page_config(
 # ======================================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Rajdhani:wght@500;600;700&family=Bebas+Neue&display=swap');
 
 /*
  * ═══════════════════════════════════════════════════════
@@ -61,6 +61,7 @@ st.markdown("""
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
+    font-size: 16px;
 }
 
 /* ── App background ───────────────────────────────────── */
@@ -77,11 +78,29 @@ html, body, [class*="css"] {
 [data-testid="stSidebar"] {
     background: #1e2436;
     border-right: 1px solid #2e3650;
-    min-width: 240px !important;
-    max-width: 240px !important;
+    min-width: 270px !important;
+    max-width: 270px !important;
+}
+
+/* Make sidebar permanent — hide collapse arrow */
+[data-testid="collapsedControl"],
+button[kind="header"],
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarNav"] button[aria-label="Collapse sidebar"],
+section[data-testid="stSidebar"] > div:first-child > div > button {
+    display: none !important;
+}
+
+/* Keep sidebar always expanded */
+[data-testid="stSidebar"][aria-expanded="false"] {
+    display: block !important;
+    transform: none !important;
+    visibility: visible !important;
+    width: 270px !important;
+    min-width: 270px !important;
 }
 [data-testid="stSidebar"] * {
-    color: #8a96ae !important;
+    color: #c8d4ee !important;
 }
 
 /* Hide default radio styling completely */
@@ -96,9 +115,9 @@ html, body, [class*="css"] {
     border-radius: 8px;
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 500;
-    color: #6e7d9a !important;
+    color: #9dadc8 !important;
     transition: background 0.18s ease, color 0.18s ease;
     border: none;
     margin: 1px 0;
@@ -120,81 +139,98 @@ html, body, [class*="css"] {
 
 /* ── Typography ───────────────────────────────────────── */
 h1 {
-    font-family: 'Syne', sans-serif !important;
-    font-weight: 800 !important;
-    font-size: 1.9rem !important;
-    color: #e2e6f0 !important;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 2.8rem !important;
+    color: #f0f4ff !important;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
 }
 h2 {
-    font-family: 'DM Sans', sans-serif !important;
-    font-weight: 600 !important;
-    font-size: 1.05rem !important;
-    color: #c8d0e4 !important;
-    letter-spacing: 0.03em;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1.35rem !important;
+    color: #dce6ff !important;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
 }
 h3 {
-    font-family: 'DM Sans', sans-serif !important;
+    font-family: 'Rajdhani', sans-serif !important;
     font-weight: 600 !important;
-    font-size: 0.9rem !important;
-    color: #aab4cc !important;
+    font-size: 1.15rem !important;
+    color: #c0ceee !important;
 }
 p, li, .stMarkdown {
-    color: #8a96ae;
-    font-size: 0.9rem;
+    color: #aab8d4;
+    font-size: 1rem;
     line-height: 1.65;
 }
 
 /* ── KPI Cards ────────────────────────────────────────── */
 .kpi-card {
-    background: linear-gradient(145deg, #242a3d 0%, #1e2436 100%);
-    border: 1px solid #2e3650;
-    border-radius: 12px;
-    padding: 1.4rem 1.6rem;
+    background: linear-gradient(145deg, #252c40 0%, #1e2436 100%);
+    border: 1px solid #3a4460;
+    border-radius: 14px;
+    padding: 1.6rem 1.8rem 1.4rem;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.2s, transform 0.2s;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    height: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
 }
 .kpi-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(90deg, #6366f1, #818cf8);
-    border-radius: 12px 12px 0 0;
+    border-radius: 14px 14px 0 0;
 }
 .kpi-card:hover {
-    border-color: #3d4a66;
-    transform: translateY(-1px);
+    border-color: #4d5a7a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(99,102,241,0.18);
 }
 .kpi-card .kpi-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 2.2rem;
-    font-weight: 500;
-    color: #a5b4fc;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    font-weight: 400;
+    color: #dde6ff;
     line-height: 1;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 30px rgba(165,180,252,0.3);
+    margin-top: 0.2rem;
 }
 .kpi-card .kpi-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-top: 0.45rem;
-    color: #5c6880;
-    font-weight: 600;
+    margin-top: 0.55rem;
+    color: #9db0d0;
+    font-weight: 700;
+    line-height: 1.3;
 }
 .kpi-card .kpi-sub {
     font-family: 'DM Mono', monospace;
-    font-size: 0.76rem;
-    color: #818cf8;
-    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: #7a90b8;
+    margin-top: 0.3rem;
 }
 .kpi-card-alert::before {
     background: linear-gradient(90deg, #f87171, #ef4444);
 }
-.kpi-card-alert .kpi-value { color: #fca5a5; }
+.kpi-card-alert .kpi-value {
+    color: #ff9e9e;
+    text-shadow: 0 0 30px rgba(248,113,113,0.35);
+}
 
 /* ── Section Headers ─────────────────────────────────── */
 .section-header {
@@ -203,16 +239,16 @@ p, li, .stMarkdown {
     margin: 2rem 0 1rem 0;
 }
 .section-header h2 {
-    font-size: 0.78rem !important;
+    font-size: 1.05rem !important;
     letter-spacing: 0.12em !important;
     text-transform: uppercase !important;
     margin: 0;
-    color: #8a96ae !important;
+    color: #b0bedd !important;
 }
 .section-header p {
-    font-size: 0.8rem;
+    font-size: 0.92rem;
     margin: 0.2rem 0 0 0;
-    color: #4e5c78;
+    color: #6e82a8;
 }
 
 /* ── Page title block ─────────────────────────────────── */
@@ -220,7 +256,7 @@ p, li, .stMarkdown {
     margin-bottom: 0.5rem;
 }
 .page-title-block .page-eyebrow {
-    font-size: 0.7rem;
+    font-size: 0.82rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #818cf8;
@@ -232,8 +268,8 @@ p, li, .stMarkdown {
     margin: 0 0 0.3rem 0 !important;
 }
 .page-title-block .page-subtitle {
-    font-size: 0.88rem;
-    color: #5c6880;
+    font-size: 1rem;
+    color: #7d8fae;
     margin: 0;
 }
 
@@ -264,11 +300,11 @@ hr {
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
 }
 label[data-testid="stWidgetLabel"] {
-    font-size: 0.78rem !important;
+    font-size: 0.9rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
     text-transform: uppercase;
-    color: #5c6880 !important;
+    color: #8090b0 !important;
 }
 
 /* ── Buttons ──────────────────────────────────────────── */
@@ -309,15 +345,15 @@ label[data-testid="stWidgetLabel"] {
     padding: 1rem 1.2rem;
 }
 [data-testid="metric-container"] label {
-    font-size: 0.7rem !important;
-    color: #5c6880 !important;
+    font-size: 0.85rem !important;
+    color: #7a8aaa !important;
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
 [data-testid="metric-container"] [data-testid="stMetricValue"] {
     font-family: 'DM Mono', monospace;
-    font-size: 1.5rem;
-    color: #a5b4fc !important;
+    font-size: 1.8rem;
+    color: #c4d0ff !important;
 }
 
 /* ── Alerts / Info / Warning ──────────────────────────── */
@@ -335,8 +371,8 @@ details {
     padding: 0.3rem 0.5rem;
 }
 details summary {
-    font-size: 0.83rem;
-    color: #6e7d9a;
+    font-size: 0.95rem;
+    color: #8a9abf;
     font-family: 'DM Mono', monospace;
 }
 
@@ -356,15 +392,16 @@ details summary {
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
 }
 .sidebar-brand .brand-name {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 1.05rem;
-    font-weight: 800;
-    color: #dce2f0 !important;
-    letter-spacing: -0.01em;
+    font-weight: 400;
+    color: #eef2ff !important;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
 }
 .sidebar-brand .brand-sub {
     font-size: 0.68rem;
-    color: #4e5c78 !important;
+    color: #6e7d9a !important;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-top: 2px;
@@ -377,7 +414,7 @@ details summary {
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #3d4a66 !important;
+    color: #5d6e90 !important;
     padding: 1rem 14px 0.4rem;
     font-family: 'DM Mono', monospace;
 }
@@ -390,7 +427,7 @@ details summary {
 }
 .sidebar-footer .footer-text {
     font-size: 0.66rem;
-    color: #3d4a66 !important;
+    color: #5d6e90 !important;
     line-height: 1.8;
     font-family: 'DM Mono', monospace;
 }
@@ -437,16 +474,17 @@ details summary {
     box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
 }
 .login-title {
-    font-family: 'Syne', sans-serif !important;
-    font-size: 1.55rem !important;
-    font-weight: 800 !important;
-    color: #e2e6f0 !important;
-    letter-spacing: -0.02em;
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 1.7rem !important;
+    font-weight: 400 !important;
+    color: #f0f4ff !important;
+    letter-spacing: 0.05em;
     margin: 0 !important;
+    line-height: 1.2;
 }
 .login-subtitle {
     font-size: 0.8rem;
-    color: #4e5c78;
+    color: #6e7d9a;
     margin-top: 0.3rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -487,7 +525,7 @@ details summary {
     margin-bottom: 0.2rem;
 }
 .alert-banner .alert-body {
-    color: #6e7d9a;
+    color: #8a9abf;
     font-size: 0.82rem;
 }
 
@@ -507,7 +545,7 @@ details summary {
 }
 .topbar-user {
     font-size: 0.78rem;
-    color: #4e5c78;
+    color: #6e82a8;
     font-family: 'DM Mono', monospace;
 }
 .online-dot {
@@ -550,6 +588,18 @@ details summary {
 ::-webkit-scrollbar-thumb { background: #353d52; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #4a5470; }
 </style>
+<script>
+// Keep sidebar permanently open — remove collapse button once DOM is ready
+const hideSidebarToggle = () => {
+    const btn = document.querySelector('[data-testid="collapsedControl"]');
+    if (btn) btn.style.display = 'none';
+    const collapseBtn = document.querySelector('[data-testid="stSidebarCollapseButton"]');
+    if (collapseBtn) collapseBtn.style.display = 'none';
+};
+const observer = new MutationObserver(hideSidebarToggle);
+observer.observe(document.body, { childList: true, subtree: true });
+hideSidebarToggle();
+</script>
 """, unsafe_allow_html=True)
 
 # ======================================================================
@@ -590,7 +640,7 @@ def render_login():
         st.markdown("""
         <div class="login-logo-area">
             <div class="login-logo-icon">🛡</div>
-            <div class="login-title">HSE Command</div>
+            <div class="login-title">Health, Safety &amp; Environment System</div>
             <div class="login-subtitle">Uganda Oil &amp; Gas Sector · Secure Access</div>
         </div>
         """, unsafe_allow_html=True)
@@ -611,7 +661,7 @@ def render_login():
 
         st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
 
-        if st.button("Sign In to HSE Command", use_container_width=True):
+        if st.button("Sign In to HSE System", use_container_width=True):
             if username in USERS and USERS[username]["password"] == password:
                 st.session_state.authenticated = True
                 st.session_state.current_user = USERS[username]["name"]
@@ -623,12 +673,12 @@ def render_login():
         st.markdown("""
         <div style='text-align:center; margin-top:1.8rem; padding-top:1.4rem; 
              border-top: 1px solid #2a3248;'>
-            <div style='font-size:0.68rem; color:#3d4a66; font-family: DM Mono, monospace; 
+            <div style='font-size:0.68rem; color:#5d6e90; font-family: DM Mono, monospace; 
                  line-height:1.9; letter-spacing:0.04em;'>
                 HSE DATABASE MANAGEMENT SYSTEM<br>
                 Tilenga · Kingfisher · EACOP Operations<br>
                 Albertine Graben · Uganda<br>
-                <span style='color:#2e3a54;'>Authorised personnel only · v2.0</span>
+                <span style='color:#4a5870;'>Authorised personnel only · v2.0</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -726,7 +776,7 @@ with st.sidebar:
     st.markdown(f"""
     <div class="sidebar-brand">
         <div class="brand-icon">🛡</div>
-        <div class="brand-name">HSE Command</div>
+        <div class="brand-name">Health, Safety &amp; Environment System</div>
         <div class="brand-sub">Uganda O&amp;G · Albertine</div>
     </div>
     """, unsafe_allow_html=True)
@@ -749,11 +799,11 @@ with st.sidebar:
 
     st.markdown(f"""
     <div style='padding: 8px 14px;'>
-        <div style='font-size:0.72rem; color:#4e5c78; font-family: DM Mono, monospace; 
+        <div style='font-size:0.72rem; color:#6e82a8; font-family: DM Mono, monospace; 
              line-height:1.9; margin-bottom: 0.4rem;'>
-            <span style='color:#3d4a66; display:block; margin-bottom:3px;'>SIGNED IN AS</span>
-            <span style='color:#8a96ae;'>{st.session_state.current_user}</span><br>
-            <span style='color:#4e5c78; font-size:0.65rem;'>{st.session_state.user_role}</span>
+            <span style='color:#5d6e90; display:block; margin-bottom:3px;'>SIGNED IN AS</span>
+            <span style='color:#b0bedd;'>{st.session_state.current_user}</span><br>
+            <span style='color:#7080a0; font-size:0.65rem;'>{st.session_state.user_role}</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
