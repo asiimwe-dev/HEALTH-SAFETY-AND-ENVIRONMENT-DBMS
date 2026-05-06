@@ -23,154 +23,597 @@ import streamlit as st
 #  PAGE CONFIG — must be first Streamlit call
 # ======================================================================
 st.set_page_config(
-    page_title="HSE-DB | Uganda O&G",
-    page_icon="⛽",
+    page_title="HSE Command | Uganda O&G",
+    page_icon="🛡",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # ======================================================================
-#  GLOBAL CSS — Industrial dark theme, amber accent
+#  GLOBAL CSS — Refined industrial theme
 # ======================================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
 
+/* ── Reset & base ─────────────────────────────────────── */
 html, body, [class*="css"] {
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
-[data-testid="stSidebar"] {
-    background: #0d1117;
-    border-right: 1px solid #30363d;
-}
-[data-testid="stSidebar"] * { color: #c9d1d9 !important; }
-[data-testid="stSidebar"] .stRadio label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
-}
-[data-testid="stAppViewContainer"] { background: #0d1117; }
-[data-testid="block-container"] { padding-top: 1.5rem; padding-bottom: 2rem; }
-h1, h2, h3 {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 700;
-    color: #f0f6fc;
-}
-p, li, label, .stMarkdown { color: #8b949e; }
 
+/* ── App background ───────────────────────────────────── */
+[data-testid="stAppViewContainer"] {
+    background: #09090f;
+}
+[data-testid="block-container"] {
+    padding-top: 1.8rem;
+    padding-bottom: 2.5rem;
+    max-width: 1380px;
+}
+
+/* ── Sidebar / Drawer ─────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background: #0e0e18;
+    border-right: 1px solid #1e1e2e;
+    min-width: 240px !important;
+    max-width: 240px !important;
+}
+[data-testid="stSidebar"] * {
+    color: #a8a8c0 !important;
+}
+
+/* Hide default radio styling completely */
+[data-testid="stSidebar"] .stRadio > div {
+    gap: 2px;
+}
+[data-testid="stSidebar"] .stRadio label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #7070a0 !important;
+    transition: background 0.18s ease, color 0.18s ease;
+    border: none;
+    margin: 1px 0;
+    white-space: nowrap;
+}
+[data-testid="stSidebar"] .stRadio label:hover {
+    background: rgba(99, 102, 241, 0.1);
+    color: #e0e0f0 !important;
+}
+[data-testid="stSidebar"] .stRadio label[data-checked="true"],
+[data-testid="stSidebar"] .stRadio label:has(input:checked) {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a78bfa !important;
+    border-left: 2px solid #7c3aed;
+}
+[data-testid="stSidebar"] .stRadio input[type="radio"] {
+    display: none !important;
+}
+
+/* ── Typography ───────────────────────────────────────── */
+h1 {
+    font-family: 'Syne', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 1.9rem !important;
+    color: #f0f0ff !important;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+h2 {
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 1.05rem !important;
+    color: #d0d0e8 !important;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+h3 {
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    color: #b0b0cc !important;
+}
+p, li, .stMarkdown {
+    color: #8080a8;
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+/* ── KPI Cards ────────────────────────────────────────── */
 .kpi-card {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-top: 3px solid #e6a817;
-    border-radius: 6px;
-    padding: 1.2rem 1.4rem;
-    text-align: center;
+    background: linear-gradient(145deg, #12121e 0%, #0e0e18 100%);
+    border: 1px solid #1e1e30;
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #7c3aed, #4f46e5);
+    border-radius: 12px 12px 0 0;
+}
+.kpi-card:hover {
+    border-color: #2e2e50;
+    transform: translateY(-1px);
 }
 .kpi-card .kpi-value {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 2.4rem;
-    font-weight: 600;
-    color: #e6a817;
+    font-family: 'DM Mono', monospace;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #a78bfa;
     line-height: 1;
+    letter-spacing: -0.02em;
 }
 .kpi-card .kpi-label {
-    font-size: 0.73rem;
-    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #8b949e;
-    margin-top: 0.4rem;
+    color: #5050780;
+    margin-top: 0.45rem;
+    color: #60607a;
+    font-weight: 600;
 }
 .kpi-card .kpi-sub {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    color: #58a6ff;
-    margin-top: 0.3rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.76rem;
+    color: #4f46e5;
+    margin-top: 0.4rem;
 }
+.kpi-card-alert::before {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+.kpi-card-alert .kpi-value { color: #f87171; }
 
+/* ── Section Headers ─────────────────────────────────── */
 .section-header {
-    border-left: 3px solid #e6a817;
-    padding-left: 0.8rem;
-    margin: 1.6rem 0 0.8rem 0;
+    border-left: 3px solid #7c3aed;
+    padding-left: 1rem;
+    margin: 2rem 0 1rem 0;
 }
 .section-header h2 {
-    font-size: 1.05rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
     margin: 0;
-    color: #f0f6fc;
+    color: #9090b8 !important;
 }
 .section-header p {
-    font-size: 0.78rem;
-    margin: 0.15rem 0 0 0;
-    color: #8b949e;
+    font-size: 0.8rem;
+    margin: 0.2rem 0 0 0;
+    color: #50506e;
 }
 
-[data-testid="stDataFrame"] {
-    border: 1px solid #30363d;
-    border-radius: 6px;
+/* ── Page title block ─────────────────────────────────── */
+.page-title-block {
+    margin-bottom: 0.5rem;
 }
-
-.stTextInput input, .stTextArea textarea,
-.stSelectbox div[data-baseweb="select"],
-.stDateInput input {
-    background: #161b22 !important;
-    border: 1px solid #30363d !important;
-    color: #c9d1d9 !important;
-    border-radius: 4px !important;
-}
-
-.stButton > button {
-    background: #e6a817;
-    color: #0d1117;
-    font-family: 'IBM Plex Mono', monospace;
+.page-title-block .page-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
     font-weight: 600;
-    font-size: 0.82rem;
-    letter-spacing: 0.06em;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 0.3rem;
+}
+.page-title-block h1 {
+    margin: 0 0 0.3rem 0 !important;
+}
+.page-title-block .page-subtitle {
+    font-size: 0.88rem;
+    color: #50506e;
+    margin: 0;
+}
+
+/* ── Divider ──────────────────────────────────────────── */
+hr {
     border: none;
-    border-radius: 4px;
-    padding: 0.55rem 1.6rem;
-    transition: background 0.15s;
+    border-top: 1px solid #1a1a28;
+    margin: 1.4rem 0;
+}
+
+/* ── Forms & Inputs ───────────────────────────────────── */
+.stTextInput input,
+.stTextArea textarea,
+.stSelectbox div[data-baseweb="select"],
+.stDateInput input,
+.stTimeInput input {
+    background: #12121e !important;
+    border: 1px solid #22223a !important;
+    color: #c0c0d8 !important;
+    border-radius: 8px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.88rem !important;
+    transition: border-color 0.18s !important;
+}
+.stTextInput input:focus,
+.stTextArea textarea:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.12) !important;
+}
+label[data-testid="stWidgetLabel"] {
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+    color: #6060808 !important;
+    text-transform: uppercase;
+    color: #60607a !important;
+}
+
+/* ── Buttons ──────────────────────────────────────────── */
+.stButton > button {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.8rem;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
 }
 .stButton > button:hover {
-    background: #f5bb2c;
-    color: #0d1117;
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+}
+.stButton > button:active {
+    transform: translateY(0);
 }
 
-hr { border: none; border-top: 1px solid #30363d; margin: 1.5rem 0; }
+/* ── DataFrames ───────────────────────────────────────── */
+[data-testid="stDataFrame"] {
+    border: 1px solid #1a1a28 !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+}
 
-.sidebar-logo {
-    padding: 1.2rem 1rem 1rem;
-    border-bottom: 1px solid #30363d;
+/* ── Metrics ──────────────────────────────────────────── */
+[data-testid="metric-container"] {
+    background: #12121e;
+    border: 1px solid #1e1e30;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+}
+[data-testid="metric-container"] label {
+    font-size: 0.7rem !important;
+    color: #50507a !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    color: #a78bfa !important;
+}
+
+/* ── Alerts / Info / Warning ──────────────────────────── */
+.stAlert {
+    border-radius: 10px !important;
+    border-left-width: 3px !important;
+    background: #12121e !important;
+}
+
+/* ── Expander ─────────────────────────────────────────── */
+details {
+    background: #12121e;
+    border: 1px solid #1e1e30;
+    border-radius: 8px;
+    padding: 0.3rem 0.5rem;
+}
+details summary {
+    font-size: 0.83rem;
+    color: #7070a0;
+    font-family: 'DM Mono', monospace;
+}
+
+/* ── Sidebar brand block ──────────────────────────────── */
+.sidebar-brand {
+    padding: 1.6rem 1rem 1.2rem;
+    border-bottom: 1px solid #1a1a28;
+    margin-bottom: 0.8rem;
+}
+.sidebar-brand .brand-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+.sidebar-brand .brand-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #e0e0f0 !important;
+    letter-spacing: -0.01em;
+}
+.sidebar-brand .brand-sub {
+    font-size: 0.68rem;
+    color: #40406a !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+}
+
+/* ── Sidebar section label ────────────────────────────── */
+.nav-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #303050 !important;
+    padding: 1rem 14px 0.4rem;
+    font-family: 'DM Mono', monospace;
+}
+
+/* ── Sidebar footer ───────────────────────────────────── */
+.sidebar-footer {
+    padding: 1rem 14px 0.5rem;
+    border-top: 1px solid #1a1a28;
+    margin-top: 1rem;
+}
+.sidebar-footer .footer-text {
+    font-size: 0.66rem;
+    color: #303050 !important;
+    line-height: 1.8;
+    font-family: 'DM Mono', monospace;
+}
+
+/* ── Login page ───────────────────────────────────────── */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #09090f;
+}
+.login-card {
+    background: linear-gradient(160deg, #0e0e1a 0%, #0b0b14 100%);
+    border: 1px solid #1e1e30;
+    border-radius: 20px;
+    padding: 3rem 2.8rem 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124,58,237,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.login-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #7c3aed, #4f46e5, #6366f1);
+}
+.login-logo-area {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.login-logo-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+}
+.login-title {
+    font-family: 'Syne', sans-serif !important;
+    font-size: 1.55rem !important;
+    font-weight: 800 !important;
+    color: #f0f0ff !important;
+    letter-spacing: -0.02em;
+    margin: 0 !important;
+}
+.login-subtitle {
+    font-size: 0.8rem;
+    color: #40406a;
+    margin-top: 0.3rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+}
+
+/* ── Status badge ─────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+}
+.badge-critical { background: rgba(239,68,68,0.12); color: #f87171; }
+.badge-high     { background: rgba(251,146,60,0.12); color: #fb923c; }
+.badge-medium   { background: rgba(234,179,8,0.12);  color: #eab308; }
+.badge-low      { background: rgba(74,222,128,0.12); color: #4ade80; }
+.badge-open     { background: rgba(251,146,60,0.12); color: #fb923c; }
+.badge-closed   { background: rgba(74,222,128,0.12); color: #4ade80; }
+
+/* ── Alert banner ─────────────────────────────────────── */
+.alert-banner {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-left: 3px solid #ef4444;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
     margin-bottom: 1rem;
 }
-.sidebar-logo .app-name {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 1rem;
+.alert-banner .alert-title {
     font-weight: 600;
-    color: #e6a817;
-    letter-spacing: 0.05em;
+    color: #f87171;
+    font-size: 0.88rem;
+    margin-bottom: 0.2rem;
 }
-.sidebar-logo .app-sub {
-    font-size: 0.7rem;
-    color: #8b949e;
-    letter-spacing: 0.04em;
-    margin-top: 2px;
+.alert-banner .alert-body {
+    color: #70706a;
+    font-size: 0.82rem;
 }
 
-[data-testid="metric-container"] {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 6px;
-    padding: 0.8rem;
+/* ── Top bar ──────────────────────────────────────────── */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 1.2rem 0;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #1a1a28;
 }
-details {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 4px;
-    padding: 0.2rem;
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
 }
+.topbar-user {
+    font-size: 0.78rem;
+    color: #50507a;
+    font-family: 'DM Mono', monospace;
+}
+.online-dot {
+    width: 8px; height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+}
+
+/* ── Logout button override ───────────────────────────── */
+.logout-btn > button {
+    background: transparent !important;
+    border: 1px solid #2a2a40 !important;
+    color: #70707a !important;
+    font-size: 0.75rem !important;
+    padding: 0.35rem 1rem !important;
+    box-shadow: none !important;
+}
+.logout-btn > button:hover {
+    border-color: #ef4444 !important;
+    color: #f87171 !important;
+    background: rgba(239,68,68,0.06) !important;
+    transform: none !important;
+}
+
+/* ── Form container ───────────────────────────────────── */
+.form-section {
+    background: #0e0e18;
+    border: 1px solid #1a1a28;
+    border-radius: 12px;
+    padding: 1.5rem 1.6rem;
+    margin-bottom: 1rem;
+}
+
+/* ── Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0e0e18; }
+::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a58; }
 </style>
 """, unsafe_allow_html=True)
+
+# ======================================================================
+#  SESSION STATE — Authentication
+# ======================================================================
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "current_user" not in st.session_state:
+    st.session_state.current_user = ""
+if "user_role" not in st.session_state:
+    st.session_state.user_role = ""
+
+# ======================================================================
+#  DEMO CREDENTIALS (replace with DB-backed auth in production)
+# ======================================================================
+USERS = {
+    "admin":    {"password": "admin123",  "role": "HSE Administrator", "name": "Admin User"},
+    "gilbert":  {"password": "hse2025",   "role": "HSE Manager",       "name": "Gilbert"},
+    "field_ops":{"password": "ops2025",   "role": "Field Safety Officer","name": "Field Officer"},
+}
+
+# ======================================================================
+#  LOGIN PAGE
+# ======================================================================
+def render_login():
+    # Hide sidebar on login page
+    st.markdown("""
+    <style>
+    [data-testid="stSidebar"] { display: none !important; }
+    [data-testid="collapsedControl"] { display: none !important; }
+    [data-testid="block-container"] { padding: 0 !important; max-width: 100% !important; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    col_l, col_c, col_r = st.columns([1, 1.1, 1])
+    with col_c:
+        st.markdown("<div style='height: 6vh'></div>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="login-logo-area">
+            <div class="login-logo-icon">🛡</div>
+            <div class="login-title">HSE Command</div>
+            <div class="login-subtitle">Uganda Oil &amp; Gas Sector · Secure Access</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<div style='height:0.4rem'></div>", unsafe_allow_html=True)
+
+        username = st.text_input(
+            "USERNAME",
+            placeholder="Enter your username",
+            key="login_user"
+        )
+        password = st.text_input(
+            "PASSWORD",
+            type="password",
+            placeholder="Enter your password",
+            key="login_pass"
+        )
+
+        st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
+
+        if st.button("Sign In to HSE Command", use_container_width=True):
+            if username in USERS and USERS[username]["password"] == password:
+                st.session_state.authenticated = True
+                st.session_state.current_user = USERS[username]["name"]
+                st.session_state.user_role = USERS[username]["role"]
+                st.rerun()
+            else:
+                st.error("Invalid credentials. Please try again.")
+
+        st.markdown("""
+        <div style='text-align:center; margin-top:1.8rem; padding-top:1.4rem; 
+             border-top: 1px solid #1a1a28;'>
+            <div style='font-size:0.68rem; color:#30304a; font-family: DM Mono, monospace; 
+                 line-height:1.9; letter-spacing:0.04em;'>
+                HSE DATABASE MANAGEMENT SYSTEM<br>
+                Tilenga · Kingfisher · EACOP Operations<br>
+                Albertine Graben · Uganda<br>
+                <span style='color:#1e1e36;'>Authorised personnel only · v2.0</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
 
 # ======================================================================
 #  DB CONFIG  — override via environment variables in production
@@ -178,31 +621,35 @@ details {
 DB_CONFIG = {
     "host":     os.getenv("HSE_DB_HOST", "localhost"),
     "user":     os.getenv("HSE_DB_USER", "root"),
-    "password": os.getenv("HSE_DB_PASS", ""),   # <- set your MySQL password here
+    "password": os.getenv("HSE_DB_PASS", "@CtrlGil000"),
     "database": os.getenv("HSE_DB_NAME", "hse_db"),
     "charset":  "utf8mb4",
 }
 
 # Shared Plotly theme
 CHART_LAYOUT = dict(
-    font=dict(family="IBM Plex Sans", color="#8b949e"),
+    font=dict(family="DM Sans", color="#60607a", size=11),
     paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="#161b22",
-    xaxis=dict(gridcolor="#21262d", linecolor="#30363d", showgrid=True),
-    yaxis=dict(gridcolor="#21262d", linecolor="#30363d", showgrid=True),
+    plot_bgcolor="#0e0e18",
+    xaxis=dict(gridcolor="#18182a", linecolor="#1e1e30", showgrid=True, tickfont=dict(size=10)),
+    yaxis=dict(gridcolor="#18182a", linecolor="#1e1e30", showgrid=True, tickfont=dict(size=10)),
     margin=dict(l=40, r=20, t=40, b=40),
 )
+
+# Color palette
+SEVERITY_COLORS = {
+    "Critical": "#ef4444",
+    "High":     "#f97316",
+    "Medium":   "#eab308",
+    "Low":      "#4ade80",
+}
+ACCENT_COLORS = ["#7c3aed","#4f46e5","#6366f1","#8b5cf6","#a78bfa","#c4b5fd"]
 
 # ======================================================================
 #  DATABASE LAYER
 # ======================================================================
-
 @st.cache_resource(show_spinner=False)
 def get_connection():
-    """
-    Returns a cached MySQL connection for the Streamlit session.
-    Displays a user-friendly error and halts if the DB is unreachable.
-    """
     try:
         conn = mysql.connector.connect(**DB_CONFIG)
         return conn
@@ -210,16 +657,12 @@ def get_connection():
         st.error(
             "**Database connection failed.**\n\n"
             f"`{e}`\n\n"
-            "Check that MySQL is running and DB_CONFIG credentials are correct."
+            "Verify that MySQL is running and credentials are correct."
         )
         st.stop()
 
 
 def run_query(sql: str, params: tuple = None) -> pd.DataFrame:
-    """
-    Execute a SELECT query and return a Pandas DataFrame.
-    Silently re-connects on dropped connections.
-    """
     conn = get_connection()
     try:
         if not conn.is_connected():
@@ -235,10 +678,6 @@ def run_query(sql: str, params: tuple = None) -> pd.DataFrame:
 
 
 def run_write(sql: str, params: tuple = None) -> bool:
-    """
-    Execute an INSERT / UPDATE / DELETE and commit.
-    Returns True on success, False on failure (rolls back automatically).
-    """
     conn = get_connection()
     try:
         if not conn.is_connected():
@@ -255,181 +694,146 @@ def run_write(sql: str, params: tuple = None) -> bool:
 
 
 # ======================================================================
-#  SIDEBAR
+#  RENDER DECISION
+# ======================================================================
+if not st.session_state.authenticated:
+    render_login()
+    st.stop()
+
+# ======================================================================
+#  SIDEBAR — Drawer Navigation (authenticated)
 # ======================================================================
 with st.sidebar:
+    st.markdown(f"""
+    <div class="sidebar-brand">
+        <div class="brand-icon">🛡</div>
+        <div class="brand-name">HSE Command</div>
+        <div class="brand-sub">Uganda O&amp;G · Albertine</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div class='nav-section-label'>Main Navigation</div>", unsafe_allow_html=True)
+
+    page = st.radio(
+        "NAV",
+        options=[
+            "◈  Dashboard",
+            "▦  Incident Register",
+            "⊕  Report Incident",
+            "◉  Training Matrix",
+        ],
+        label_visibility="collapsed",
+    )
+
+    st.markdown("<div style='height: 1rem'></div>", unsafe_allow_html=True)
+    st.markdown("<div class='nav-section-label'>System</div>", unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div style='padding: 8px 14px;'>
+        <div style='font-size:0.72rem; color:#40406a; font-family: DM Mono, monospace; 
+             line-height:1.9; margin-bottom: 0.4rem;'>
+            <span style='color:#5050780; display:block; margin-bottom:3px;'>SIGNED IN AS</span>
+            <span style='color:#7070a0;'>{st.session_state.current_user}</span><br>
+            <span style='color:#30305a; font-size:0.65rem;'>{st.session_state.user_role}</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div class='logout-btn'>", unsafe_allow_html=True)
+    if st.button("Sign Out", use_container_width=True):
+        st.session_state.authenticated = False
+        st.session_state.current_user = ""
+        st.session_state.user_role = ""
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
     st.markdown("""
-    <div class="sidebar-logo">
-        <div class="app-name">⛽  HSE-DB</div>
-        <div class="app-sub">UGANDA OIL &amp; GAS SECTOR</div>
-        <div class="app-sub" style="margin-top:4px;color:#e6a81799;">
+    <div class="sidebar-footer">
+        <div class="footer-text">
+            HSE-DB v2.0 · 2025<br>
+            MySQL 8 · Streamlit<br>
             Tilenga · Kingfisher · EACOP
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    page = st.radio(
-        "NAVIGATE",
-        options=[
-            "📊  Dashboard",
-            "🗂  Incident Register",
-            "➕  Report Incident",
-            "🎓  Training Matrix",
-        ],
-    )
 
+# ── Helper: page header ─────────────────────────────────────────────
+def page_header(eyebrow: str, title: str, subtitle: str):
+    st.markdown(f"""
+    <div class="page-title-block">
+        <div class="page-eyebrow">{eyebrow}</div>
+        <h1>{title}</h1>
+        <p class="page-subtitle">{subtitle}</p>
+    </div>
+    """, unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown(
-        "<div style='font-size:0.68rem;color:#484f58;font-family:IBM Plex Mono,monospace;"
-        "line-height:1.7;'>"
-        "HSE DATABASE SYSTEM<br>"
-        "Database Systems Project 2025<br>"
-        "Author: Gilbert<br>"
-        "Stack: MySQL 8 · Streamlit<br>"
-        "</div>",
+
+
+# ── Helper: KPI card ────────────────────────────────────────────────
+def kpi_card(col, value, label, sub="", alert=False):
+    card_class = "kpi-card kpi-card-alert" if alert else "kpi-card"
+    col.markdown(
+        f"<div class='{card_class}'>"
+        f"<div class='kpi-value'>{value}</div>"
+        f"<div class='kpi-label'>{label}</div>"
+        f"{'<div class=kpi-sub>' + sub + '</div>' if sub else ''}"
+        f"</div>",
         unsafe_allow_html=True,
     )
+
+
+# ── Helper: section header ───────────────────────────────────────────
+def section_header(title: str, subtitle: str = ""):
+    st.markdown(
+        f"<div class='section-header'><h2>{title}</h2>"
+        f"{'<p>' + subtitle + '</p>' if subtitle else ''}</div>",
+        unsafe_allow_html=True,
+    )
+
 
 # ======================================================================
 #  PAGE 1 — DASHBOARD
 # ======================================================================
 if "Dashboard" in page:
 
-    st.markdown(
-        "<h1 style='margin-bottom:0.1rem;'>HSE Performance Dashboard</h1>"
-        "<p style='margin-top:0;font-size:0.82rem;color:#8b949e;'>"
-        "Albertine Graben Operations — All Active Sites</p>",
-        unsafe_allow_html=True,
+    page_header(
+        "Operational Overview",
+        "HSE Performance Dashboard",
+        "Albertine Graben Operations — All Active Sites · Real-time data"
     )
-    st.markdown("---")
 
-    # ── KPI row ────────────────────────────────────────────────────
+    # ── KPI row ─────────────────────────────────────────────────────
     df_kpi = run_query("""
         SELECT
-          (SELECT COUNT(*) FROM incidents)                                       AS total_incidents,
-          (SELECT COUNT(*) FROM incidents WHERE inc_status = 'Open')            AS open_incidents,
-          (SELECT COUNT(*) FROM incidents WHERE incident_type = 'LTI')          AS total_lti,
-          (SELECT COUNT(*) FROM incidents
-           WHERE severity IN ('High','Critical'))                                AS high_critical,
+          (SELECT COUNT(*) FROM incidents)                                         AS total_incidents,
+          (SELECT COUNT(*) FROM incidents WHERE inc_status = 'Open')              AS open_incidents,
+          (SELECT COUNT(*) FROM incidents WHERE incident_type = 'LTI')            AS total_lti,
+          (SELECT COUNT(*) FROM incidents WHERE severity IN ('High','Critical'))   AS high_critical,
           (SELECT site_name FROM sites
            ORDER BY FIELD(hse_risk_category,'Critical','High','Medium','Low')
-           LIMIT 1)                                                              AS highest_risk_site,
+           LIMIT 1)                                                                AS highest_risk_site,
           ROUND(
             (SELECT COUNT(*) FROM employee_training WHERE cert_status='Valid')
-            * 100.0
-            / NULLIF((SELECT COUNT(*) FROM employee_training),0)
-          , 1)                                                                   AS training_pct
+            * 100.0 / NULLIF((SELECT COUNT(*) FROM employee_training), 0)
+          , 1)                                                                     AS training_pct
     """)
 
     if not df_kpi.empty:
         r = df_kpi.iloc[0]
+        c1, c2, c3, c4, c5, c6 = st.columns(6)
+        kpi_card(c1, int(r["total_incidents"]),  "Total Incidents",       "All time")
+        kpi_card(c2, int(r["open_incidents"]),   "Open Incidents",        "Requires action", alert=int(r["open_incidents"]) > 0)
+        kpi_card(c3, int(r["total_lti"]),        "LTI Events",            "Lost Time Injuries", alert=int(r["total_lti"]) > 0)
+        kpi_card(c4, int(r["high_critical"]),    "High / Critical",       "Severity tier")
+        kpi_card(c5, f"{r['training_pct']}%",    "Training Compliance",   "Valid certifications")
+        kpi_card(c6,
+                 (r["highest_risk_site"][:14] if r["highest_risk_site"] else "N/A"),
+                 "Highest Risk Site", "Critical category")
 
-        def kpi_card(col, value, label, sub=""):
-            col.markdown(
-                f"<div class='kpi-card'>"
-                f"<div class='kpi-value'>{value}</div>"
-                f"<div class='kpi-label'>{label}</div>"
-                f"{'<div class=kpi-sub>' + sub + '</div>' if sub else ''}"
-                f"</div>",
-                unsafe_allow_html=True,
-            )
+    st.markdown("<div style='height:1.4rem'></div>", unsafe_allow_html=True)
 
-        c1, c2, c3, c4, c5 = st.columns(5)
-        kpi_card(c1, int(r["total_incidents"]),  "Total Incidents",      "All time")
-        kpi_card(c2, int(r["open_incidents"]),   "Open Incidents",       "Needs action")
-        kpi_card(c3, int(r["total_lti"]),         "LTI Events",           "Lost Time Injuries")
-        kpi_card(c4, f"{r['training_pct']}%",    "Training Compliance",  "Valid certs")
-        kpi_card(c5,
-                 (r["highest_risk_site"][:16] if r["highest_risk_site"] else "N/A"),
-                 "Highest Risk Site", "CRITICAL category")
-
-    st.markdown("<div style='height:1.2rem'></div>", unsafe_allow_html=True)
-
-    # ── Charts row ─────────────────────────────────────────────────
-    col_l, col_r = st.columns([3, 2], gap="large")
-
-    with col_l:
-        st.markdown(
-            "<div class='section-header'><h2>Incidents by Site</h2>"
-            "<p>Stacked by severity — all recorded events</p></div>",
-            unsafe_allow_html=True,
-        )
-        df_site = run_query("""
-            SELECT s.site_name, i.severity, COUNT(*) AS cnt
-            FROM incidents i JOIN sites s ON i.site_id = s.site_id
-            GROUP BY s.site_name, i.severity
-            ORDER BY cnt DESC
-        """)
-        if not df_site.empty:
-            sev_colors = {"Critical":"#ff7b72","High":"#fb8f44",
-                          "Medium":"#e6a817","Low":"#3fb950"}
-            fig = px.bar(
-                df_site, x="site_name", y="cnt", color="severity",
-                color_discrete_map=sev_colors,
-                labels={"site_name":"","cnt":"Incidents","severity":"Severity"},
-                barmode="stack",
-            )
-            fig.update_layout(**CHART_LAYOUT,
-                legend=dict(orientation="h", yanchor="bottom", y=1.02,
-                            font=dict(size=11,color="#8b949e"), bgcolor="rgba(0,0,0,0)"),
-                xaxis_tickangle=-18, xaxis_tickfont=dict(size=10),
-            )
-            fig.update_traces(marker_line_width=0)
-            st.plotly_chart(fig, use_container_width=True)
-
-    with col_r:
-        st.markdown(
-            "<div class='section-header'><h2>Incident Type Breakdown</h2>"
-            "<p>Distribution across event categories</p></div>",
-            unsafe_allow_html=True,
-        )
-        df_type = run_query("""
-            SELECT incident_type, COUNT(*) AS cnt
-            FROM incidents GROUP BY incident_type ORDER BY cnt DESC
-        """)
-        if not df_type.empty:
-            fig2 = px.pie(
-                df_type, names="incident_type", values="cnt",
-                color_discrete_sequence=["#e6a817","#fb8f44","#ff7b72",
-                                         "#58a6ff","#3fb950","#bc8cff"],
-                hole=0.55,
-            )
-            fig2.update_layout(**CHART_LAYOUT,
-                annotations=[dict(text=f"<b>{df_type['cnt'].sum()}</b><br>total",
-                                  x=0.5,y=0.5,font=dict(size=14,color="#e6a817"),
-                                  showarrow=False)],
-                legend=dict(font=dict(size=11,color="#8b949e"),bgcolor="rgba(0,0,0,0)"),
-            )
-            fig2.update_traces(
-                textposition="outside", textfont_size=10,
-                marker=dict(line=dict(color="#0d1117",width=2)),
-            )
-            st.plotly_chart(fig2, use_container_width=True)
-
-    # ── Recent incidents ───────────────────────────────────────────
-    st.markdown(
-        "<div class='section-header'><h2>Recent Incidents</h2>"
-        "<p>Latest 5 entries across all sites</p></div>",
-        unsafe_allow_html=True,
-    )
-    df_recent = run_query("""
-        SELECT
-          i.incident_id                        AS `ID`,
-          DATE(i.incident_date)                AS `Date`,
-          s.site_name                          AS `Site`,
-          i.incident_type                      AS `Type`,
-          i.severity                           AS `Severity`,
-          i.inc_status                         AS `Status`,
-          CONCAT(e.first_name,' ',e.last_name) AS `Reported By`
-        FROM incidents i
-          JOIN sites     s ON i.site_id     = s.site_id
-          JOIN employees e ON i.reported_by = e.employee_id
-        ORDER BY i.incident_date DESC LIMIT 5
-    """)
-    if not df_recent.empty:
-        st.dataframe(df_recent, use_container_width=True, hide_index=True)
-
-    # ── Expiry alert banner ────────────────────────────────────────
+    # ── Cert expiry alert ────────────────────────────────────────────
     df_exp = run_query("""
         SELECT
           CONCAT(e.first_name,' ',e.last_name) AS Employee,
@@ -447,48 +851,151 @@ if "Dashboard" in page:
         ORDER BY et.expiry_date ASC LIMIT 8
     """)
     if not df_exp.empty:
-        st.warning(
-            f"⚠️  **{len(df_exp)} certification(s)** expired or expiring within 60 days. "
-            "Workers must not be deployed to controlled areas without valid certs."
-        )
+        st.markdown(f"""
+        <div class="alert-banner">
+            <div class="alert-title">Certification Alert — Immediate Action Required</div>
+            <div class="alert-body">
+                {len(df_exp)} certification(s) are expired or expiring within 60 days.
+                Affected workers must not be deployed to controlled areas without valid certifications.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         st.dataframe(df_exp, use_container_width=True, hide_index=True)
+
+    st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
+
+    # ── Charts row ──────────────────────────────────────────────────
+    col_l, col_r = st.columns([3, 2], gap="large")
+
+    with col_l:
+        section_header("Incidents by Site", "Stacked by severity — all recorded events")
+        df_site = run_query("""
+            SELECT s.site_name, i.severity, COUNT(*) AS cnt
+            FROM incidents i JOIN sites s ON i.site_id = s.site_id
+            GROUP BY s.site_name, i.severity
+            ORDER BY cnt DESC
+        """)
+        if not df_site.empty:
+            fig = px.bar(
+                df_site, x="site_name", y="cnt", color="severity",
+                color_discrete_map=SEVERITY_COLORS,
+                labels={"site_name": "", "cnt": "Incidents", "severity": "Severity"},
+                barmode="stack",
+            )
+            fig.update_layout(
+                **CHART_LAYOUT,
+                legend=dict(orientation="h", yanchor="bottom", y=1.02,
+                            font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+                xaxis_tickangle=-18,
+            )
+            fig.update_traces(marker_line_width=0)
+            st.plotly_chart(fig, use_container_width=True)
+
+    with col_r:
+        section_header("Incident Type Distribution", "By event category")
+        df_type = run_query("""
+            SELECT incident_type, COUNT(*) AS cnt
+            FROM incidents GROUP BY incident_type ORDER BY cnt DESC
+        """)
+        if not df_type.empty:
+            fig2 = px.pie(
+                df_type, names="incident_type", values="cnt",
+                color_discrete_sequence=ACCENT_COLORS,
+                hole=0.6,
+            )
+            fig2.update_layout(
+                **CHART_LAYOUT,
+                annotations=[dict(
+                    text=f"<b>{df_type['cnt'].sum()}</b><br><span style='font-size:10px'>total</span>",
+                    x=0.5, y=0.5,
+                    font=dict(size=14, color="#a78bfa"),
+                    showarrow=False
+                )],
+                legend=dict(font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+            )
+            fig2.update_traces(
+                textposition="outside", textfont_size=10,
+                marker=dict(line=dict(color="#09090f", width=2)),
+            )
+            st.plotly_chart(fig2, use_container_width=True)
+
+    # ── Monthly trend ────────────────────────────────────────────────
+    section_header("Monthly Incident Trend", "12-month rolling view — all severity levels")
+    df_monthly = run_query("""
+        SELECT DATE_FORMAT(incident_date,'%Y-%m') AS month,
+               severity, COUNT(*) AS cnt
+        FROM incidents
+        WHERE incident_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+        GROUP BY month, severity
+        ORDER BY month
+    """)
+    if not df_monthly.empty:
+        fig3 = px.line(
+            df_monthly, x="month", y="cnt", color="severity",
+            color_discrete_map=SEVERITY_COLORS,
+            markers=True,
+            labels={"month": "", "cnt": "Incidents", "severity": "Severity"},
+        )
+        fig3.update_layout(
+            **CHART_LAYOUT,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02,
+                        font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+            xaxis_tickangle=-18,
+        )
+        fig3.update_traces(line=dict(width=2), marker=dict(size=6))
+        st.plotly_chart(fig3, use_container_width=True)
+
+    # ── Site risk summary ────────────────────────────────────────────
+    section_header("Site Risk Profile", "Risk categorisation across all operational sites")
+    df_sites_risk = run_query("""
+        SELECT site_name, district, operation_type, hse_risk_category, site_status
+        FROM sites ORDER BY FIELD(hse_risk_category,'Critical','High','Medium','Low')
+    """)
+    if not df_sites_risk.empty:
+        st.dataframe(df_sites_risk, use_container_width=True, hide_index=True,
+            column_config={
+                "site_name":         st.column_config.TextColumn("Site Name",    width="medium"),
+                "district":          st.column_config.TextColumn("District",     width="medium"),
+                "operation_type":    st.column_config.TextColumn("Operation",    width="medium"),
+                "hse_risk_category": st.column_config.TextColumn("Risk Level",   width="small"),
+                "site_status":       st.column_config.TextColumn("Status",       width="small"),
+            }
+        )
 
 
 # ======================================================================
-#  PAGE 2 — INCIDENT REGISTER (READ + FILTER)
+#  PAGE 2 — INCIDENT REGISTER
 # ======================================================================
 elif "Incident Register" in page:
 
-    st.markdown(
-        "<h1>Incident Register</h1>"
-        "<p style='font-size:0.82rem;color:#8b949e;'>"
-        "Full incident log — filter by site, severity, type, or status</p>",
-        unsafe_allow_html=True,
+    page_header(
+        "Records Management",
+        "Incident Register",
+        "Full incident log — filter, search, and inspect all recorded events"
     )
-    st.markdown("---")
 
-    # Fetch dropdown data
     df_sites_dd = run_query("SELECT site_name FROM sites ORDER BY site_name")
     site_options = ["All Sites"] + df_sites_dd["site_name"].tolist()
 
+    # ── Filters ──────────────────────────────────────────────────────
     f1, f2, f3, f4 = st.columns(4)
     with f1: sel_site = st.selectbox("Site",     site_options)
-    with f2: sel_sev  = st.selectbox("Severity", ["All","Critical","High","Medium","Low"])
-    with f3: sel_type = st.selectbox("Type",     ["All","Near-Miss","First Aid","MTC",
-                                                   "LTI","Fatality","Environmental"])
-    with f4: sel_stat = st.selectbox("Status",   ["All","Open","Under Investigation","Closed"])
+    with f2: sel_sev  = st.selectbox("Severity", ["All", "Critical", "High", "Medium", "Low"])
+    with f3: sel_type = st.selectbox("Type",     ["All", "Near-Miss", "First Aid", "MTC",
+                                                   "LTI", "Fatality", "Environmental"])
+    with f4: sel_stat = st.selectbox("Status",   ["All", "Open", "Under Investigation", "Closed"])
 
-    # Build dynamic query
+    # ── Dynamic query ────────────────────────────────────────────────
     wheres = ["1=1"]
     params = []
     if sel_site != "All Sites":
         wheres.append("s.site_name = %s"); params.append(sel_site)
-    if sel_sev != "All":
-        wheres.append("i.severity = %s");  params.append(sel_sev)
+    if sel_sev  != "All":
+        wheres.append("i.severity = %s");       params.append(sel_sev)
     if sel_type != "All":
-        wheres.append("i.incident_type = %s"); params.append(sel_type)
+        wheres.append("i.incident_type = %s");  params.append(sel_type)
     if sel_stat != "All":
-        wheres.append("i.inc_status = %s"); params.append(sel_stat)
+        wheres.append("i.inc_status = %s");     params.append(sel_stat)
 
     df_inc = run_query(f"""
         SELECT
@@ -513,14 +1020,10 @@ elif "Incident Register" in page:
         ORDER BY i.incident_date DESC
     """, tuple(params))
 
-    st.markdown(
-        f"<div class='section-header'><h2>Results</h2>"
-        f"<p>{len(df_inc)} incident(s) match current filters</p></div>",
-        unsafe_allow_html=True,
-    )
+    section_header("Query Results", f"{len(df_inc)} incident(s) match the current filters")
 
     if df_inc.empty:
-        st.info("No incidents match the selected filters.")
+        st.info("No incidents match the selected filters. Adjust criteria above.")
     else:
         st.dataframe(
             df_inc, use_container_width=True, hide_index=True, height=420,
@@ -530,9 +1033,10 @@ elif "Incident Register" in page:
             },
         )
 
-        # Expandable detail view
+        # ── Detail view ───────────────────────────────────────────────
         st.markdown("---")
-        sel_id = st.selectbox("Select Incident ID for full detail", df_inc["ID"].tolist())
+        section_header("Incident Detail View", "Select an incident ID to inspect the full record")
+        sel_id = st.selectbox("Incident ID", df_inc["ID"].tolist())
         if sel_id:
             df_d = run_query("""
                 SELECT i.*, s.site_name, s.district,
@@ -554,28 +1058,28 @@ elif "Incident Register" in page:
                 d.metric("Reported By", r["reporter_name"])
                 e.metric("Status",      r["inc_status"])
                 f.metric("Root Cause",  r["root_cause"])
+                st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
                 st.markdown("**Incident Description**")
                 st.info(str(r["description"]))
                 if r["immediate_action"]:
-                    st.markdown("**Immediate Action**"); st.success(str(r["immediate_action"]))
+                    st.markdown("**Immediate Actions Taken**")
+                    st.success(str(r["immediate_action"]))
                 if r["corrective_action"]:
-                    st.markdown("**Corrective Action Plan**"); st.warning(str(r["corrective_action"]))
+                    st.markdown("**Corrective Action Plan**")
+                    st.warning(str(r["corrective_action"]))
 
 
 # ======================================================================
-#  PAGE 3 — REPORT NEW INCIDENT (CREATE)
+#  PAGE 3 — REPORT NEW INCIDENT
 # ======================================================================
 elif "Report Incident" in page:
 
-    st.markdown(
-        "<h1>Report New Incident</h1>"
-        "<p style='font-size:0.82rem;color:#8b949e;'>"
-        "Fields marked * are mandatory. Reports are logged immediately to the HSE database.</p>",
-        unsafe_allow_html=True,
+    page_header(
+        "Data Entry",
+        "Report New Incident",
+        "All fields marked * are mandatory. Records are committed to the HSE database immediately."
     )
-    st.markdown("---")
 
-    # Fetch lookup tables for dropdowns
     df_sites_f = run_query(
         "SELECT site_id, site_name FROM sites WHERE site_status='Operational' ORDER BY site_name")
     df_emps_f  = run_query(
@@ -586,51 +1090,51 @@ elif "Report Incident" in page:
     emp_map  = dict(zip(df_emps_f["display"],    df_emps_f["employee_id"]))
 
     with st.form("incident_form", clear_on_submit=True):
-        st.markdown(
-            "<div class='section-header'><h2>Incident Details</h2></div>",
-            unsafe_allow_html=True,
-        )
+
+        section_header("Incident Details", "Date, time, location and personnel")
         r1a, r1b = st.columns(2)
         with r1a:
-            inc_date = st.date_input("Date *", value=datetime.date.today(),
+            inc_date = st.date_input("Incident Date *", value=datetime.date.today(),
                                      max_value=datetime.date.today())
-            inc_time = st.time_input("Time *", value=datetime.time(8, 0))
+            inc_time = st.time_input("Incident Time *", value=datetime.time(8, 0))
         with r1b:
             inc_site = st.selectbox("Site *", list(site_map.keys()))
-            reporter = st.selectbox("Reported By (FSO) *", list(emp_map.keys()))
+            reporter = st.selectbox("Field Safety Officer (Reporter) *", list(emp_map.keys()))
 
+        st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+        section_header("Classification", "Incident type, severity and root cause")
         r2a, r2b = st.columns(2)
         with r2a:
             inc_type   = st.selectbox("Incident Type *",
-                ["Near-Miss","First Aid","MTC","LTI","Fatality","Environmental"])
-            severity   = st.selectbox("Severity *", ["Low","Medium","High","Critical"])
+                ["Near-Miss", "First Aid", "MTC", "LTI", "Fatality", "Environmental"])
+            severity   = st.selectbox("Severity Level *",
+                ["Low", "Medium", "High", "Critical"])
         with r2b:
             root_cause = st.selectbox("Root Cause *",
-                ["Procedural Violation","Equipment Failure","Human Error",
-                 "Environmental Condition","Management System Gap"])
+                ["Procedural Violation", "Equipment Failure", "Human Error",
+                 "Environmental Condition", "Management System Gap"])
             involved_opts = ["None — third party / unknown"] + list(emp_map.keys())
-            involved   = st.selectbox("Person Involved (if employee)", involved_opts)
+            involved   = st.selectbox("Employee Involved (if applicable)", involved_opts)
 
-        st.markdown(
-            "<div class='section-header' style='margin-top:1rem'><h2>Narrative</h2></div>",
-            unsafe_allow_html=True,
-        )
-        description      = st.text_area("Description * (min. 30 chars)", height=110,
-            placeholder="Describe what happened, where on site, and the sequence of events...")
-        immediate_action = st.text_area("Immediate Action Taken", height=80,
-            placeholder="Steps taken immediately to prevent escalation...")
-        corrective_action= st.text_area("Corrective Action Plan", height=80,
-            placeholder="Longer-term remediation to prevent recurrence...")
+        st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+        section_header("Incident Narrative", "Description and response actions")
+        description       = st.text_area("Incident Description * (minimum 30 characters)", height=110,
+            placeholder="Describe what happened, the location on site, and the sequence of events in detail...")
+        immediate_action  = st.text_area("Immediate Actions Taken", height=80,
+            placeholder="Steps taken immediately following the incident to prevent escalation...")
+        corrective_action = st.text_area("Corrective Action Plan", height=80,
+            placeholder="Longer-term remediation steps to prevent recurrence of this incident...")
 
-        submitted = st.form_submit_button("⚡  SUBMIT INCIDENT REPORT")
+        st.markdown("<div style='height:0.8rem'></div>", unsafe_allow_html=True)
+        submitted = st.form_submit_button("Submit Incident Report", use_container_width=False)
 
     if submitted:
         errors = []
         if not description or len(description.strip()) < 30:
-            errors.append("Description must be at least 30 characters.")
+            errors.append("Incident description must be at least 30 characters.")
         if errors:
             for err in errors:
-                st.error(f"❌ {err}")
+                st.error(err)
         else:
             inc_dt      = datetime.datetime.combine(inc_date, inc_time)
             site_id_val = site_map[inc_site]
@@ -651,10 +1155,11 @@ elif "Report Incident" in page:
             )
             if ok:
                 st.success(
-                    f"✅ **Incident logged.** Type: {inc_type} | Severity: {severity} | "
-                    f"Site: {inc_site}. Rig Manager notified."
+                    f"Incident successfully logged. Type: **{inc_type}** | "
+                    f"Severity: **{severity}** | Site: **{inc_site}**. "
+                    f"The Rig Manager has been notified."
                 )
-                with st.expander("View submitted record"):
+                with st.expander("View Submitted Record (JSON)"):
                     st.json({
                         "incident_date": str(inc_dt),
                         "site": inc_site, "type": inc_type, "severity": severity,
@@ -664,19 +1169,17 @@ elif "Report Incident" in page:
 
 
 # ======================================================================
-#  PAGE 4 — TRAINING MATRIX (M:N RELATIONSHIP VISUALISATION)
+#  PAGE 4 — TRAINING MATRIX
 # ======================================================================
 elif "Training Matrix" in page:
 
-    st.markdown(
-        "<h1>Training &amp; Certification Matrix</h1>"
-        "<p style='font-size:0.82rem;color:#8b949e;'>"
-        "M:N relationship — employees ↔ training_courses via employee_training junction table</p>",
-        unsafe_allow_html=True,
+    page_header(
+        "Compliance & Certification",
+        "Training & Certification Matrix",
+        "Many-to-many relationship — employees linked to training courses via the employee_training junction table"
     )
-    st.markdown("---")
 
-    # KPI row
+    # ── KPI row ──────────────────────────────────────────────────────
     df_tk = run_query("""
         SELECT
           COUNT(*)                                       AS total_records,
@@ -687,28 +1190,18 @@ elif "Training Matrix" in page:
     """)
     if not df_tk.empty:
         r = df_tk.iloc[0]
-        k1,k2,k3,k4 = st.columns(4)
-        def t_kpi(col, v, lbl, sub=""):
-            col.markdown(
-                f"<div class='kpi-card'>"
-                f"<div class='kpi-value'>{v}</div>"
-                f"<div class='kpi-label'>{lbl}</div>"
-                f"{'<div class=kpi-sub>'+sub+'</div>' if sub else ''}"
-                f"</div>", unsafe_allow_html=True)
-        t_kpi(k1, int(r["total_records"]), "Total Records",    "All employees × courses")
-        t_kpi(k2, int(r["valid_certs"]),   "Valid Certs",      "Currently compliant")
-        t_kpi(k3, int(r["expired_certs"]), "Expired Certs",    "Action required")
-        t_kpi(k4, f"{r['avg_score']}%",    "Avg. Pass Score",  "All assessments")
+        k1, k2, k3, k4 = st.columns(4)
+        kpi_card(k1, int(r["total_records"]), "Total Records",   "All employees × courses")
+        kpi_card(k2, int(r["valid_certs"]),   "Valid Certifications", "Currently compliant")
+        kpi_card(k3, int(r["expired_certs"]), "Expired Certifications", "Action required",
+                 alert=int(r["expired_certs"]) > 0)
+        kpi_card(k4, f"{r['avg_score']}%",   "Average Assessment Score", "All completions")
 
     st.markdown("<div style='height:1.2rem'></div>", unsafe_allow_html=True)
 
-    # Show the M:N JOIN SQL for educational context
-    st.markdown(
-        "<div class='section-header'><h2>Full Training Matrix</h2>"
-        "<p>JOIN across employees · employee_training · training_courses · sites</p></div>",
-        unsafe_allow_html=True,
-    )
-    with st.expander("📄 View SQL — M:N JOIN Query"):
+    # ── SQL display ──────────────────────────────────────────────────
+    section_header("Full Training Matrix", "JOIN across employees · employee_training · training_courses · sites")
+    with st.expander("View SQL — Many-to-Many JOIN Query"):
         st.code("""
 SELECT
   CONCAT(e.first_name,' ',e.last_name)  AS employee_name,
@@ -751,15 +1244,15 @@ ORDER BY e.last_name, et.expiry_date;
         ORDER BY e.last_name, et.expiry_date
     """)
 
-    # Filters
+    # ── Filters ──────────────────────────────────────────────────────
     f1, f2 = st.columns(2)
     with f1:
-        status_f = st.multiselect("Filter by Status",
-            ["Valid","Expired","Pending Renewal"],
-            default=["Valid","Expired","Pending Renewal"])
+        status_f = st.multiselect("Filter by Certification Status",
+            ["Valid", "Expired", "Pending Renewal"],
+            default=["Valid", "Expired", "Pending Renewal"])
     with f2:
         cats = df_matrix["Category"].unique().tolist() if not df_matrix.empty else []
-        cat_f = st.multiselect("Filter by Category", cats, default=cats)
+        cat_f = st.multiselect("Filter by Training Category", cats, default=cats)
 
     if not df_matrix.empty:
         filtered = df_matrix[
@@ -776,12 +1269,8 @@ ORDER BY e.last_name, et.expiry_date;
             },
         )
 
-        # Course coverage chart
-        st.markdown(
-            "<div class='section-header'><h2>Certification Coverage by Course</h2>"
-            "<p>Valid vs Expired per course code</p></div>",
-            unsafe_allow_html=True,
-        )
+        # ── Course coverage ───────────────────────────────────────────
+        section_header("Certification Coverage by Course", "Valid vs Expired per course code")
         df_cov = run_query("""
             SELECT tc.course_code, et.cert_status, COUNT(*) AS cnt
             FROM employee_training et
@@ -792,23 +1281,24 @@ ORDER BY e.last_name, et.expiry_date;
         if not df_cov.empty:
             fig3 = px.bar(
                 df_cov, x="course_code", y="cnt", color="cert_status",
-                color_discrete_map={"Valid":"#3fb950","Expired":"#ff7b72",
-                                    "Pending Renewal":"#e6a817"},
-                labels={"course_code":"Course","cnt":"Employees","cert_status":"Status"},
+                color_discrete_map={
+                    "Valid":           "#4ade80",
+                    "Expired":         "#f87171",
+                    "Pending Renewal": "#eab308",
+                },
+                labels={"course_code": "Course", "cnt": "Employees", "cert_status": "Status"},
                 barmode="group",
             )
-            fig3.update_layout(**CHART_LAYOUT,
-                legend=dict(orientation="h",yanchor="bottom",y=1.02,
-                            font=dict(size=11,color="#8b949e"),bgcolor="rgba(0,0,0,0)"))
+            fig3.update_layout(
+                **CHART_LAYOUT,
+                legend=dict(orientation="h", yanchor="bottom", y=1.02,
+                            font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+            )
             fig3.update_traces(marker_line_width=0)
             st.plotly_chart(fig3, use_container_width=True)
 
-        # Per-employee compliance bar
-        st.markdown(
-            "<div class='section-header'><h2>Per-Employee Compliance</h2>"
-            "<p>Ratio of valid certifications — sorted ascending</p></div>",
-            unsafe_allow_html=True,
-        )
+        # ── Per-employee compliance ───────────────────────────────────
+        section_header("Per-Employee Compliance Rate", "Ratio of valid certifications — sorted ascending")
         df_ec = run_query("""
             SELECT
               CONCAT(e.first_name,' ',e.last_name) AS employee,
@@ -824,13 +1314,20 @@ ORDER BY e.last_name, et.expiry_date;
             fig4 = px.bar(
                 df_ec, x="compliance_pct", y="employee", orientation="h",
                 color="compliance_pct",
-                color_continuous_scale=["#ff7b72","#e6a817","#3fb950"],
-                range_color=[0,100],
-                labels={"compliance_pct":"Compliance %","employee":""},
+                color_continuous_scale=["#ef4444", "#eab308", "#4ade80"],
+                range_color=[0, 100],
+                labels={"compliance_pct": "Compliance %", "employee": ""},
                 text="compliance_pct",
             )
-            fig4.update_traces(texttemplate="%{text:.0f}%",
-                               textposition="outside", marker_line_width=0)
-            fig4.update_layout(**CHART_LAYOUT, coloraxis_showscale=False, height=380,
-                               xaxis=dict(range=[0,115],gridcolor="#21262d"))
+            fig4.update_traces(
+                texttemplate="%{text:.0f}%",
+                textposition="outside",
+                marker_line_width=0,
+            )
+            fig4.update_layout(
+                **CHART_LAYOUT,
+                coloraxis_showscale=False,
+                height=380,
+                xaxis=dict(range=[0, 115], gridcolor="#18182a"),
+            )
             st.plotly_chart(fig4, use_container_width=True)
