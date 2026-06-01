@@ -10,14 +10,15 @@ Config  : Set DB credentials below or via environment variables
           HSE_DB_HOST | HSE_DB_USER | HSE_DB_PASS | HSE_DB_NAME
 """
 
-import os
 import datetime
+import os
+
 import mysql.connector
-from mysql.connector import Error
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from mysql.connector import Error
 
 # ======================================================================
 #  PAGE CONFIG — must be first Streamlit call
@@ -32,7 +33,8 @@ st.set_page_config(
 # ======================================================================
 #  GLOBAL CSS — Refined industrial theme
 # ======================================================================
-st.markdown("""
+st.markdown(
+    """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Rajdhani:wght@500;600;700&family=Bebas+Neue&display=swap');
 
@@ -600,7 +602,9 @@ const observer = new MutationObserver(hideSidebarToggle);
 observer.observe(document.body, { childList: true, subtree: true });
 hideSidebarToggle();
 </script>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # ======================================================================
 #  SESSION STATE — Authentication
@@ -616,47 +620,60 @@ if "user_role" not in st.session_state:
 #  DEMO CREDENTIALS (replace with DB-backed auth in production)
 # ======================================================================
 USERS = {
-    "admin":    {"password": "admin123",  "role": "HSE Administrator", "name": "Admin User"},
-    "gilbert":  {"password": "hse2025",   "role": "HSE Manager",       "name": "Gilbert"},
-    "field_ops":{"password": "ops2025",   "role": "Field Safety Officer","name": "Field Officer"},
+    "admin": {
+        "password": "admin123",
+        "role": "HSE Administrator",
+        "name": "Admin User",
+    },
+    "gilbert": {"password": "hse2025", "role": "HSE Manager", "name": "Gilbert"},
+    "field_ops": {
+        "password": "ops2025",
+        "role": "Field Safety Officer",
+        "name": "Field Officer",
+    },
 }
+
 
 # ======================================================================
 #  LOGIN PAGE
 # ======================================================================
 def render_login():
     # Hide sidebar on login page
-    st.markdown("""
+    st.markdown(
+        """
     <style>
     [data-testid="stSidebar"] { display: none !important; }
     [data-testid="collapsedControl"] { display: none !important; }
     [data-testid="block-container"] { padding: 0 !important; max-width: 100% !important; }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     col_l, col_c, col_r = st.columns([1, 1.1, 1])
     with col_c:
         st.markdown("<div style='height: 6vh'></div>", unsafe_allow_html=True)
-        st.markdown("""
+        st.markdown(
+            """
         <div class="login-logo-area">
             <div class="login-logo-icon">🛡</div>
             <div class="login-title">Health, Safety &amp; Environment System</div>
             <div class="login-subtitle">Uganda Oil &amp; Gas Sector · Secure Access</div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
         st.markdown("<div style='height:0.4rem'></div>", unsafe_allow_html=True)
 
         username = st.text_input(
-            "USERNAME",
-            placeholder="Enter your username",
-            key="login_user"
+            "USERNAME", placeholder="Enter your username", key="login_user"
         )
         password = st.text_input(
             "PASSWORD",
             type="password",
             placeholder="Enter your password",
-            key="login_pass"
+            key="login_pass",
         )
 
         st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
@@ -670,7 +687,8 @@ def render_login():
             else:
                 st.error("Invalid credentials. Please try again.")
 
-        st.markdown("""
+        st.markdown(
+            """
         <div style='text-align:center; margin-top:1.8rem; padding-top:1.4rem; 
              border-top: 1px solid #2a3248;'>
             <div style='font-size:0.68rem; color:#5d6e90; font-family: DM Mono, monospace; 
@@ -681,18 +699,20 @@ def render_login():
                 <span style='color:#4a5870;'>Authorised personnel only · v2.0</span>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
 
 # ======================================================================
 #  DB CONFIG  — override via environment variables in production
 # ======================================================================
 DB_CONFIG = {
-    "host":     os.getenv("HSE_DB_HOST", "localhost"),
-    "user":     os.getenv("HSE_DB_USER", "root"),
+    "host": os.getenv("HSE_DB_HOST", "localhost"),
+    "user": os.getenv("HSE_DB_USER", "root"),
     "password": os.getenv("HSE_DB_PASS", "@CtrlGil000"),
     "database": os.getenv("HSE_DB_NAME", "hse_db"),
-    "charset":  "utf8mb4",
+    "charset": "utf8mb4",
 }
 
 # Shared Plotly theme
@@ -700,19 +720,24 @@ CHART_LAYOUT = dict(
     font=dict(family="DM Sans", color="#6e7d9a", size=11),
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="#1e2436",
-    xaxis=dict(gridcolor="#2a3248", linecolor="#353d52", showgrid=True, tickfont=dict(size=10)),
-    yaxis=dict(gridcolor="#2a3248", linecolor="#353d52", showgrid=True, tickfont=dict(size=10)),
+    xaxis=dict(
+        gridcolor="#2a3248", linecolor="#353d52", showgrid=True, tickfont=dict(size=10)
+    ),
+    yaxis=dict(
+        gridcolor="#2a3248", linecolor="#353d52", showgrid=True, tickfont=dict(size=10)
+    ),
     margin=dict(l=40, r=20, t=40, b=40),
 )
 
 # Color palette
 SEVERITY_COLORS = {
     "Critical": "#ef4444",
-    "High":     "#f97316",
-    "Medium":   "#eab308",
-    "Low":      "#4ade80",
+    "High": "#f97316",
+    "Medium": "#eab308",
+    "Low": "#4ade80",
 }
-ACCENT_COLORS = ["#7c3aed","#4f46e5","#6366f1","#8b5cf6","#a78bfa","#c4b5fd"]
+ACCENT_COLORS = ["#7c3aed", "#4f46e5", "#6366f1", "#8b5cf6", "#a78bfa", "#c4b5fd"]
+
 
 # ======================================================================
 #  DATABASE LAYER
@@ -773,15 +798,20 @@ if not st.session_state.authenticated:
 #  SIDEBAR — Drawer Navigation (authenticated)
 # ======================================================================
 with st.sidebar:
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="sidebar-brand">
         <div class="brand-icon">🛡</div>
         <div class="brand-name">Health, Safety &amp; Environment System</div>
         <div class="brand-sub">Uganda O&amp;G · Albertine</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-    st.markdown("<div class='nav-section-label'>Main Navigation</div>", unsafe_allow_html=True)
+    st.markdown(
+        "<div class='nav-section-label'>Main Navigation</div>", unsafe_allow_html=True
+    )
 
     page = st.radio(
         "NAV",
@@ -797,7 +827,8 @@ with st.sidebar:
     st.markdown("<div style='height: 1rem'></div>", unsafe_allow_html=True)
     st.markdown("<div class='nav-section-label'>System</div>", unsafe_allow_html=True)
 
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div style='padding: 8px 14px;'>
         <div style='font-size:0.72rem; color:#6e82a8; font-family: DM Mono, monospace; 
              line-height:1.9; margin-bottom: 0.4rem;'>
@@ -806,7 +837,9 @@ with st.sidebar:
             <span style='color:#7080a0; font-size:0.65rem;'>{st.session_state.user_role}</span>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     st.markdown("<div class='logout-btn'>", unsafe_allow_html=True)
     if st.button("Sign Out", use_container_width=True):
@@ -816,7 +849,8 @@ with st.sidebar:
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(
+        """
     <div class="sidebar-footer">
         <div class="footer-text">
             HSE-DB v2.0 · 2025<br>
@@ -824,18 +858,23 @@ with st.sidebar:
             Tilenga · Kingfisher · EACOP
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 # ── Helper: page header ─────────────────────────────────────────────
 def page_header(eyebrow: str, title: str, subtitle: str):
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="page-title-block">
         <div class="page-eyebrow">{eyebrow}</div>
         <h1>{title}</h1>
         <p class="page-subtitle">{subtitle}</p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
     st.markdown("---")
 
 
@@ -865,11 +904,10 @@ def section_header(title: str, subtitle: str = ""):
 #  PAGE 1 — DASHBOARD
 # ======================================================================
 if "Dashboard" in page:
-
     page_header(
         "Operational Overview",
         "HSE Performance Dashboard",
-        "Albertine Graben Operations — All Active Sites · Real-time data"
+        "Albertine Graben Operations — All Active Sites · Real-time data",
     )
 
     # ── KPI row ─────────────────────────────────────────────────────
@@ -891,14 +929,31 @@ if "Dashboard" in page:
     if not df_kpi.empty:
         r = df_kpi.iloc[0]
         c1, c2, c3, c4, c5, c6 = st.columns(6)
-        kpi_card(c1, int(r["total_incidents"]),  "Total Incidents",       "All time")
-        kpi_card(c2, int(r["open_incidents"]),   "Open Incidents",        "Requires action", alert=int(r["open_incidents"]) > 0)
-        kpi_card(c3, int(r["total_lti"]),        "LTI Events",            "Lost Time Injuries", alert=int(r["total_lti"]) > 0)
-        kpi_card(c4, int(r["high_critical"]),    "High / Critical",       "Severity tier")
-        kpi_card(c5, f"{r['training_pct']}%",    "Training Compliance",   "Valid certifications")
-        kpi_card(c6,
-                 (r["highest_risk_site"][:14] if r["highest_risk_site"] else "N/A"),
-                 "Highest Risk Site", "Critical category")
+        kpi_card(c1, int(r["total_incidents"]), "Total Incidents", "All time")
+        kpi_card(
+            c2,
+            int(r["open_incidents"]),
+            "Open Incidents",
+            "Requires action",
+            alert=int(r["open_incidents"]) > 0,
+        )
+        kpi_card(
+            c3,
+            int(r["total_lti"]),
+            "LTI Events",
+            "Lost Time Injuries",
+            alert=int(r["total_lti"]) > 0,
+        )
+        kpi_card(c4, int(r["high_critical"]), "High / Critical", "Severity tier")
+        kpi_card(
+            c5, f"{r['training_pct']}%", "Training Compliance", "Valid certifications"
+        )
+        kpi_card(
+            c6,
+            (r["highest_risk_site"][:14] if r["highest_risk_site"] else "N/A"),
+            "Highest Risk Site",
+            "Critical category",
+        )
 
     st.markdown("<div style='height:1.4rem'></div>", unsafe_allow_html=True)
 
@@ -920,7 +975,8 @@ if "Dashboard" in page:
         ORDER BY et.expiry_date ASC LIMIT 8
     """)
     if not df_exp.empty:
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <div class="alert-banner">
             <div class="alert-title">Certification Alert — Immediate Action Required</div>
             <div class="alert-body">
@@ -928,7 +984,9 @@ if "Dashboard" in page:
                 Affected workers must not be deployed to controlled areas without valid certifications.
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
         st.dataframe(df_exp, use_container_width=True, hide_index=True)
 
     st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
@@ -946,15 +1004,23 @@ if "Dashboard" in page:
         """)
         if not df_site.empty:
             fig = px.bar(
-                df_site, x="site_name", y="cnt", color="severity",
+                df_site,
+                x="site_name",
+                y="cnt",
+                color="severity",
                 color_discrete_map=SEVERITY_COLORS,
                 labels={"site_name": "", "cnt": "Incidents", "severity": "Severity"},
                 barmode="stack",
             )
             fig.update_layout(
                 **CHART_LAYOUT,
-                legend=dict(orientation="h", yanchor="bottom", y=1.02,
-                            font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    font=dict(size=11, color="#60607a"),
+                    bgcolor="rgba(0,0,0,0)",
+                ),
                 xaxis_tickangle=-18,
             )
             fig.update_traces(marker_line_width=0)
@@ -968,28 +1034,38 @@ if "Dashboard" in page:
         """)
         if not df_type.empty:
             fig2 = px.pie(
-                df_type, names="incident_type", values="cnt",
+                df_type,
+                names="incident_type",
+                values="cnt",
                 color_discrete_sequence=ACCENT_COLORS,
                 hole=0.6,
             )
             fig2.update_layout(
                 **CHART_LAYOUT,
-                annotations=[dict(
-                    text=f"<b>{df_type['cnt'].sum()}</b><br><span style='font-size:10px'>total</span>",
-                    x=0.5, y=0.5,
-                    font=dict(size=14, color="#a78bfa"),
-                    showarrow=False
-                )],
-                legend=dict(font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+                annotations=[
+                    dict(
+                        text=f"<b>{df_type['cnt'].sum()}</b><br><span style='font-size:10px'>total</span>",
+                        x=0.5,
+                        y=0.5,
+                        font=dict(size=14, color="#a78bfa"),
+                        showarrow=False,
+                    )
+                ],
+                legend=dict(
+                    font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"
+                ),
             )
             fig2.update_traces(
-                textposition="outside", textfont_size=10,
+                textposition="outside",
+                textfont_size=10,
                 marker=dict(line=dict(color="#1a1f2e", width=2)),
             )
             st.plotly_chart(fig2, use_container_width=True)
 
     # ── Monthly trend ────────────────────────────────────────────────
-    section_header("Monthly Incident Trend", "12-month rolling view — all severity levels")
+    section_header(
+        "Monthly Incident Trend", "12-month rolling view — all severity levels"
+    )
     df_monthly = run_query("""
         SELECT DATE_FORMAT(incident_date,'%Y-%m') AS month,
                severity, COUNT(*) AS cnt
@@ -1000,35 +1076,52 @@ if "Dashboard" in page:
     """)
     if not df_monthly.empty:
         fig3 = px.line(
-            df_monthly, x="month", y="cnt", color="severity",
+            df_monthly,
+            x="month",
+            y="cnt",
+            color="severity",
             color_discrete_map=SEVERITY_COLORS,
             markers=True,
             labels={"month": "", "cnt": "Incidents", "severity": "Severity"},
         )
         fig3.update_layout(
             **CHART_LAYOUT,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02,
-                        font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                font=dict(size=11, color="#60607a"),
+                bgcolor="rgba(0,0,0,0)",
+            ),
             xaxis_tickangle=-18,
         )
         fig3.update_traces(line=dict(width=2), marker=dict(size=6))
         st.plotly_chart(fig3, use_container_width=True)
 
     # ── Site risk summary ────────────────────────────────────────────
-    section_header("Site Risk Profile", "Risk categorisation across all operational sites")
+    section_header(
+        "Site Risk Profile", "Risk categorisation across all operational sites"
+    )
     df_sites_risk = run_query("""
         SELECT site_name, district, operation_type, hse_risk_category, site_status
         FROM sites ORDER BY FIELD(hse_risk_category,'Critical','High','Medium','Low')
     """)
     if not df_sites_risk.empty:
-        st.dataframe(df_sites_risk, use_container_width=True, hide_index=True,
+        st.dataframe(
+            df_sites_risk,
+            use_container_width=True,
+            hide_index=True,
             column_config={
-                "site_name":         st.column_config.TextColumn("Site Name",    width="medium"),
-                "district":          st.column_config.TextColumn("District",     width="medium"),
-                "operation_type":    st.column_config.TextColumn("Operation",    width="medium"),
-                "hse_risk_category": st.column_config.TextColumn("Risk Level",   width="small"),
-                "site_status":       st.column_config.TextColumn("Status",       width="small"),
-            }
+                "site_name": st.column_config.TextColumn("Site Name", width="medium"),
+                "district": st.column_config.TextColumn("District", width="medium"),
+                "operation_type": st.column_config.TextColumn(
+                    "Operation", width="medium"
+                ),
+                "hse_risk_category": st.column_config.TextColumn(
+                    "Risk Level", width="small"
+                ),
+                "site_status": st.column_config.TextColumn("Status", width="small"),
+            },
         )
 
 
@@ -1036,11 +1129,10 @@ if "Dashboard" in page:
 #  PAGE 2 — INCIDENT REGISTER
 # ======================================================================
 elif "Incident Register" in page:
-
     page_header(
         "Records Management",
         "Incident Register",
-        "Full incident log — filter, search, and inspect all recorded events"
+        "Full incident log — filter, search, and inspect all recorded events",
     )
 
     df_sites_dd = run_query("SELECT site_name FROM sites ORDER BY site_name")
@@ -1048,25 +1140,46 @@ elif "Incident Register" in page:
 
     # ── Filters ──────────────────────────────────────────────────────
     f1, f2, f3, f4 = st.columns(4)
-    with f1: sel_site = st.selectbox("Site",     site_options)
-    with f2: sel_sev  = st.selectbox("Severity", ["All", "Critical", "High", "Medium", "Low"])
-    with f3: sel_type = st.selectbox("Type",     ["All", "Near-Miss", "First Aid", "MTC",
-                                                   "LTI", "Fatality", "Environmental"])
-    with f4: sel_stat = st.selectbox("Status",   ["All", "Open", "Under Investigation", "Closed"])
+    with f1:
+        sel_site = st.selectbox("Site", site_options)
+    with f2:
+        sel_sev = st.selectbox("Severity", ["All", "Critical", "High", "Medium", "Low"])
+    with f3:
+        sel_type = st.selectbox(
+            "Type",
+            [
+                "All",
+                "Near-Miss",
+                "First Aid",
+                "MTC",
+                "LTI",
+                "Fatality",
+                "Environmental",
+            ],
+        )
+    with f4:
+        sel_stat = st.selectbox(
+            "Status", ["All", "Open", "Under Investigation", "Closed"]
+        )
 
     # ── Dynamic query ────────────────────────────────────────────────
     wheres = ["1=1"]
     params = []
     if sel_site != "All Sites":
-        wheres.append("s.site_name = %s"); params.append(sel_site)
-    if sel_sev  != "All":
-        wheres.append("i.severity = %s");       params.append(sel_sev)
+        wheres.append("s.site_name = %s")
+        params.append(sel_site)
+    if sel_sev != "All":
+        wheres.append("i.severity = %s")
+        params.append(sel_sev)
     if sel_type != "All":
-        wheres.append("i.incident_type = %s");  params.append(sel_type)
+        wheres.append("i.incident_type = %s")
+        params.append(sel_type)
     if sel_stat != "All":
-        wheres.append("i.inc_status = %s");     params.append(sel_stat)
+        wheres.append("i.inc_status = %s")
+        params.append(sel_stat)
 
-    df_inc = run_query(f"""
+    df_inc = run_query(
+        f"""
         SELECT
           i.incident_id                              AS `ID`,
           DATE(i.incident_date)                      AS `Date`,
@@ -1087,27 +1200,37 @@ elif "Incident Register" in page:
           LEFT JOIN employees inv ON i.involved_employee_id = inv.employee_id
         WHERE {" AND ".join(wheres)}
         ORDER BY i.incident_date DESC
-    """, tuple(params))
+    """,
+        tuple(params),
+    )
 
-    section_header("Query Results", f"{len(df_inc)} incident(s) match the current filters")
+    section_header(
+        "Query Results", f"{len(df_inc)} incident(s) match the current filters"
+    )
 
     if df_inc.empty:
         st.info("No incidents match the selected filters. Adjust criteria above.")
     else:
         st.dataframe(
-            df_inc, use_container_width=True, hide_index=True, height=420,
+            df_inc,
+            use_container_width=True,
+            hide_index=True,
+            height=420,
             column_config={
                 "Description": st.column_config.TextColumn(width="large"),
-                "ID":          st.column_config.NumberColumn(width="small"),
+                "ID": st.column_config.NumberColumn(width="small"),
             },
         )
 
         # ── Detail view ───────────────────────────────────────────────
         st.markdown("---")
-        section_header("Incident Detail View", "Select an incident ID to inspect the full record")
+        section_header(
+            "Incident Detail View", "Select an incident ID to inspect the full record"
+        )
         sel_id = st.selectbox("Incident ID", df_inc["ID"].tolist())
         if sel_id:
-            df_d = run_query("""
+            df_d = run_query(
+                """
                 SELECT i.*, s.site_name, s.district,
                   CONCAT(rep.first_name,' ',rep.last_name) AS reporter_name,
                   COALESCE(CONCAT(inv.first_name,' ',inv.last_name),'—') AS involved_name
@@ -1116,17 +1239,19 @@ elif "Incident Register" in page:
                   JOIN employees rep ON i.reported_by = rep.employee_id
                   LEFT JOIN employees inv ON i.involved_employee_id = inv.employee_id
                 WHERE i.incident_id = %s
-            """, (sel_id,))
+            """,
+                (sel_id,),
+            )
             if not df_d.empty:
                 r = df_d.iloc[0]
                 a, b, c = st.columns(3)
-                a.metric("Site",        r["site_name"])
-                b.metric("Type",        r["incident_type"])
-                c.metric("Severity",    r["severity"])
+                a.metric("Site", r["site_name"])
+                b.metric("Type", r["incident_type"])
+                c.metric("Severity", r["severity"])
                 d, e, f = st.columns(3)
                 d.metric("Reported By", r["reporter_name"])
-                e.metric("Status",      r["inc_status"])
-                f.metric("Root Cause",  r["root_cause"])
+                e.metric("Status", r["inc_status"])
+                f.metric("Root Cause", r["root_cause"])
                 st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
                 st.markdown("**Incident Description**")
                 st.info(str(r["description"]))
@@ -1142,60 +1267,86 @@ elif "Incident Register" in page:
 #  PAGE 3 — REPORT NEW INCIDENT
 # ======================================================================
 elif "Report Incident" in page:
-
     page_header(
         "Data Entry",
         "Report New Incident",
-        "All fields marked * are mandatory. Records are committed to the HSE database immediately."
+        "All fields marked * are mandatory. Records are committed to the HSE database immediately.",
     )
 
     df_sites_f = run_query(
-        "SELECT site_id, site_name FROM sites WHERE site_status='Operational' ORDER BY site_name")
-    df_emps_f  = run_query(
+        "SELECT site_id, site_name FROM sites WHERE site_status='Operational' ORDER BY site_name"
+    )
+    df_emps_f = run_query(
         "SELECT employee_id, CONCAT(first_name,' ',last_name,' — ',job_title) AS display "
-        "FROM employees WHERE emp_status='Active' ORDER BY last_name")
+        "FROM employees WHERE emp_status='Active' ORDER BY last_name"
+    )
 
     site_map = dict(zip(df_sites_f["site_name"], df_sites_f["site_id"]))
-    emp_map  = dict(zip(df_emps_f["display"],    df_emps_f["employee_id"]))
+    emp_map = dict(zip(df_emps_f["display"], df_emps_f["employee_id"]))
 
     with st.form("incident_form", clear_on_submit=True):
-
         section_header("Incident Details", "Date, time, location and personnel")
         r1a, r1b = st.columns(2)
         with r1a:
-            inc_date = st.date_input("Incident Date *", value=datetime.date.today(),
-                                     max_value=datetime.date.today())
+            inc_date = st.date_input(
+                "Incident Date *",
+                value=datetime.date.today(),
+                max_value=datetime.date.today(),
+            )
             inc_time = st.time_input("Incident Time *", value=datetime.time(8, 0))
         with r1b:
             inc_site = st.selectbox("Site *", list(site_map.keys()))
-            reporter = st.selectbox("Field Safety Officer (Reporter) *", list(emp_map.keys()))
+            reporter = st.selectbox(
+                "Field Safety Officer (Reporter) *", list(emp_map.keys())
+            )
 
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
         section_header("Classification", "Incident type, severity and root cause")
         r2a, r2b = st.columns(2)
         with r2a:
-            inc_type   = st.selectbox("Incident Type *",
-                ["Near-Miss", "First Aid", "MTC", "LTI", "Fatality", "Environmental"])
-            severity   = st.selectbox("Severity Level *",
-                ["Low", "Medium", "High", "Critical"])
+            inc_type = st.selectbox(
+                "Incident Type *",
+                ["Near-Miss", "First Aid", "MTC", "LTI", "Fatality", "Environmental"],
+            )
+            severity = st.selectbox(
+                "Severity Level *", ["Low", "Medium", "High", "Critical"]
+            )
         with r2b:
-            root_cause = st.selectbox("Root Cause *",
-                ["Procedural Violation", "Equipment Failure", "Human Error",
-                 "Environmental Condition", "Management System Gap"])
+            root_cause = st.selectbox(
+                "Root Cause *",
+                [
+                    "Procedural Violation",
+                    "Equipment Failure",
+                    "Human Error",
+                    "Environmental Condition",
+                    "Management System Gap",
+                ],
+            )
             involved_opts = ["None — third party / unknown"] + list(emp_map.keys())
-            involved   = st.selectbox("Employee Involved (if applicable)", involved_opts)
+            involved = st.selectbox("Employee Involved (if applicable)", involved_opts)
 
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
         section_header("Incident Narrative", "Description and response actions")
-        description       = st.text_area("Incident Description * (minimum 30 characters)", height=110,
-            placeholder="Describe what happened, the location on site, and the sequence of events in detail...")
-        immediate_action  = st.text_area("Immediate Actions Taken", height=80,
-            placeholder="Steps taken immediately following the incident to prevent escalation...")
-        corrective_action = st.text_area("Corrective Action Plan", height=80,
-            placeholder="Longer-term remediation steps to prevent recurrence of this incident...")
+        description = st.text_area(
+            "Incident Description * (minimum 30 characters)",
+            height=110,
+            placeholder="Describe what happened, the location on site, and the sequence of events in detail...",
+        )
+        immediate_action = st.text_area(
+            "Immediate Actions Taken",
+            height=80,
+            placeholder="Steps taken immediately following the incident to prevent escalation...",
+        )
+        corrective_action = st.text_area(
+            "Corrective Action Plan",
+            height=80,
+            placeholder="Longer-term remediation steps to prevent recurrence of this incident...",
+        )
 
         st.markdown("<div style='height:0.8rem'></div>", unsafe_allow_html=True)
-        submitted = st.form_submit_button("Submit Incident Report", use_container_width=False)
+        submitted = st.form_submit_button(
+            "Submit Incident Report", use_container_width=False
+        )
 
     if submitted:
         errors = []
@@ -1205,11 +1356,14 @@ elif "Report Incident" in page:
             for err in errors:
                 st.error(err)
         else:
-            inc_dt      = datetime.datetime.combine(inc_date, inc_time)
+            inc_dt = datetime.datetime.combine(inc_date, inc_time)
             site_id_val = site_map[inc_site]
             reporter_id = emp_map[reporter]
-            involved_id = (emp_map[involved]
-                           if involved != "None — third party / unknown" else None)
+            involved_id = (
+                emp_map[involved]
+                if involved != "None — third party / unknown"
+                else None
+            )
 
             ok = run_write(
                 """INSERT INTO incidents
@@ -1217,10 +1371,18 @@ elif "Report Incident" in page:
                     incident_type, severity, description, root_cause,
                     immediate_action, corrective_action, inc_status)
                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'Open')""",
-                (inc_dt, site_id_val, reporter_id, involved_id,
-                 inc_type, severity, description.strip(), root_cause,
-                 immediate_action.strip() or None,
-                 corrective_action.strip() or None),
+                (
+                    inc_dt,
+                    site_id_val,
+                    reporter_id,
+                    involved_id,
+                    inc_type,
+                    severity,
+                    description.strip(),
+                    root_cause,
+                    immediate_action.strip() or None,
+                    corrective_action.strip() or None,
+                ),
             )
             if ok:
                 st.success(
@@ -1229,23 +1391,27 @@ elif "Report Incident" in page:
                     f"The Rig Manager has been notified."
                 )
                 with st.expander("View Submitted Record (JSON)"):
-                    st.json({
-                        "incident_date": str(inc_dt),
-                        "site": inc_site, "type": inc_type, "severity": severity,
-                        "root_cause": root_cause, "reported_by": reporter,
-                        "description": description.strip(),
-                    })
+                    st.json(
+                        {
+                            "incident_date": str(inc_dt),
+                            "site": inc_site,
+                            "type": inc_type,
+                            "severity": severity,
+                            "root_cause": root_cause,
+                            "reported_by": reporter,
+                            "description": description.strip(),
+                        }
+                    )
 
 
 # ======================================================================
 #  PAGE 4 — TRAINING MATRIX
 # ======================================================================
 elif "Training Matrix" in page:
-
     page_header(
         "Compliance & Certification",
         "Training & Certification Matrix",
-        "Many-to-many relationship — employees linked to training courses via the employee_training junction table"
+        "Many-to-many relationship — employees linked to training courses via the employee_training junction table",
     )
 
     # ── KPI row ──────────────────────────────────────────────────────
@@ -1260,18 +1426,33 @@ elif "Training Matrix" in page:
     if not df_tk.empty:
         r = df_tk.iloc[0]
         k1, k2, k3, k4 = st.columns(4)
-        kpi_card(k1, int(r["total_records"]), "Total Records",   "All employees × courses")
-        kpi_card(k2, int(r["valid_certs"]),   "Valid Certifications", "Currently compliant")
-        kpi_card(k3, int(r["expired_certs"]), "Expired Certifications", "Action required",
-                 alert=int(r["expired_certs"]) > 0)
-        kpi_card(k4, f"{r['avg_score']}%",   "Average Assessment Score", "All completions")
+        kpi_card(
+            k1, int(r["total_records"]), "Total Records", "All employees × courses"
+        )
+        kpi_card(
+            k2, int(r["valid_certs"]), "Valid Certifications", "Currently compliant"
+        )
+        kpi_card(
+            k3,
+            int(r["expired_certs"]),
+            "Expired Certifications",
+            "Action required",
+            alert=int(r["expired_certs"]) > 0,
+        )
+        kpi_card(
+            k4, f"{r['avg_score']}%", "Average Assessment Score", "All completions"
+        )
 
     st.markdown("<div style='height:1.2rem'></div>", unsafe_allow_html=True)
 
     # ── SQL display ──────────────────────────────────────────────────
-    section_header("Full Training Matrix", "JOIN across employees · employee_training · training_courses · sites")
+    section_header(
+        "Full Training Matrix",
+        "JOIN across employees · employee_training · training_courses · sites",
+    )
     with st.expander("View SQL — Many-to-Many JOIN Query"):
-        st.code("""
+        st.code(
+            """
 SELECT
   CONCAT(e.first_name,' ',e.last_name)  AS employee_name,
   e.job_title,
@@ -1290,7 +1471,9 @@ FROM employee_training et
   JOIN training_courses tc ON et.course_id   = tc.course_id
   JOIN sites            s  ON e.site_id      = s.site_id
 ORDER BY e.last_name, et.expiry_date;
-        """, language="sql")
+        """,
+            language="sql",
+        )
 
     df_matrix = run_query("""
         SELECT
@@ -1316,9 +1499,11 @@ ORDER BY e.last_name, et.expiry_date;
     # ── Filters ──────────────────────────────────────────────────────
     f1, f2 = st.columns(2)
     with f1:
-        status_f = st.multiselect("Filter by Certification Status",
+        status_f = st.multiselect(
+            "Filter by Certification Status",
             ["Valid", "Expired", "Pending Renewal"],
-            default=["Valid", "Expired", "Pending Renewal"])
+            default=["Valid", "Expired", "Pending Renewal"],
+        )
     with f2:
         cats = df_matrix["Category"].unique().tolist() if not df_matrix.empty else []
         cat_f = st.multiselect("Filter by Training Category", cats, default=cats)
@@ -1328,18 +1513,24 @@ ORDER BY e.last_name, et.expiry_date;
             df_matrix["Status"].isin(status_f) & df_matrix["Category"].isin(cat_f)
         ]
         st.dataframe(
-            filtered, use_container_width=True, hide_index=True, height=480,
+            filtered,
+            use_container_width=True,
+            hide_index=True,
+            height=480,
             column_config={
                 "Score (%)": st.column_config.ProgressColumn(
-                    "Score (%)", min_value=0, max_value=100, format="%.1f%%"),
+                    "Score (%)", min_value=0, max_value=100, format="%.1f%%"
+                ),
                 "Days Left": st.column_config.NumberColumn("Days Left", format="%d d"),
-                "Course":    st.column_config.TextColumn(width="large"),
-                "Employee":  st.column_config.TextColumn(width="medium"),
+                "Course": st.column_config.TextColumn(width="large"),
+                "Employee": st.column_config.TextColumn(width="medium"),
             },
         )
 
         # ── Course coverage ───────────────────────────────────────────
-        section_header("Certification Coverage by Course", "Valid vs Expired per course code")
+        section_header(
+            "Certification Coverage by Course", "Valid vs Expired per course code"
+        )
         df_cov = run_query("""
             SELECT tc.course_code, et.cert_status, COUNT(*) AS cnt
             FROM employee_training et
@@ -1349,25 +1540,40 @@ ORDER BY e.last_name, et.expiry_date;
         """)
         if not df_cov.empty:
             fig3 = px.bar(
-                df_cov, x="course_code", y="cnt", color="cert_status",
+                df_cov,
+                x="course_code",
+                y="cnt",
+                color="cert_status",
                 color_discrete_map={
-                    "Valid":           "#4ade80",
-                    "Expired":         "#f87171",
+                    "Valid": "#4ade80",
+                    "Expired": "#f87171",
                     "Pending Renewal": "#eab308",
                 },
-                labels={"course_code": "Course", "cnt": "Employees", "cert_status": "Status"},
+                labels={
+                    "course_code": "Course",
+                    "cnt": "Employees",
+                    "cert_status": "Status",
+                },
                 barmode="group",
             )
             fig3.update_layout(
                 **CHART_LAYOUT,
-                legend=dict(orientation="h", yanchor="bottom", y=1.02,
-                            font=dict(size=11, color="#60607a"), bgcolor="rgba(0,0,0,0)"),
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    font=dict(size=11, color="#60607a"),
+                    bgcolor="rgba(0,0,0,0)",
+                ),
             )
             fig3.update_traces(marker_line_width=0)
             st.plotly_chart(fig3, use_container_width=True)
 
         # ── Per-employee compliance ───────────────────────────────────
-        section_header("Per-Employee Compliance Rate", "Ratio of valid certifications — sorted ascending")
+        section_header(
+            "Per-Employee Compliance Rate",
+            "Ratio of valid certifications — sorted ascending",
+        )
         df_ec = run_query("""
             SELECT
               CONCAT(e.first_name,' ',e.last_name) AS employee,
@@ -1381,7 +1587,10 @@ ORDER BY e.last_name, et.expiry_date;
         """)
         if not df_ec.empty:
             fig4 = px.bar(
-                df_ec, x="compliance_pct", y="employee", orientation="h",
+                df_ec,
+                x="compliance_pct",
+                y="employee",
+                orientation="h",
                 color="compliance_pct",
                 color_continuous_scale=["#ef4444", "#eab308", "#4ade80"],
                 range_color=[0, 100],
