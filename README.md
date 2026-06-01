@@ -1,111 +1,86 @@
 # HSE Management System — Uganda Oil & Gas Sector
 
 <p align='left'>
-  <img src='https://img.shields.io/badge/Version-2.0-blue?style=for-the-badge' alt='Version'>
-  <img src='https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python' alt='Python'>
+  <img src='https://img.shields.io/badge/Version-2.1-blue?style=for-the-badge' alt='Version'>
+  <img src='https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white' alt='PHP'>
   <img src='https://img.shields.io/badge/MySQL-8.0+-00758F?style=for-the-badge&logo=mysql&logoColor=white' alt='MySQL'>
-  <img src='https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white' alt='Streamlit'>
+  <img src='https://img.shields.io/badge/Tailwind_CSS-3.0+-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white' alt='Tailwind'>
   <img src='https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge' alt='License'>
 </p>
 
 ---
 
 ## 📄 Executive Summary
-The **Health, Safety, and Environment (HSE) DBMS** is a production-grade database management system engineered to oversee HSE operations within Uganda's burgeoning oil and gas sector. Specifically designed for the **Albertine Graben** (Tilenga, Kingfisher, and EACOP projects), the system provides a centralized platform for secure, real-time monitoring of safety metrics, incident management, and regulatory compliance.
+The **Health, Safety, and Environment (HSE) DBMS** is an enterprise-grade platform engineered to oversee HSE operations within Uganda's oil and gas sector (Tilenga, Kingfisher, and EACOP). Migrated from a Python prototype to a high-performance **PHP 8.2+ MVC architecture**, the system provides secure, real-time monitoring of safety metrics, incident management, and regulatory compliance.
 
 ## 🎯 Project Role: Problem & Solution
 
 ### The Problem
-Managing HSE data in multi-site, high-risk oil and gas operations often suffers from fragmented tracking, delayed incident reporting, and certification lapses. These inefficiencies increase the risk of workplace accidents and lead to non-compliance with stringent regulatory standards (NEMA, PAU, OPITO), potentially resulting in heavy fines and operational shutdowns.
+High-risk oil and gas operations require precise tracking of personnel, incidents, and certifications. Legacy systems often suffer from data fragmentation and slow reporting, increasing operational risk and regulatory non-compliance.
 
 ### The Solution
-This DBMS provides an integrated digital solution that automates the tracking of personnel, incidents, and training certifications. By centralizing data into a high-performance, interactive dashboard protected by secure authentication, it empowers safety officers with real-time insights, automated expiry alerts, and comprehensive audit trails.
+This digital command center automates HSE workflows. It features a high-density dashboard, a many-to-many training matrix, and a production-ready incident reporting system, all protected by modern web security standards.
 
-## 🛠 Tech Stack & Implementation
+## 🛠 Tech Stack (v2.1)
 
-### Core Technologies
-- **Frontend:** [Streamlit](https://streamlit.io/) — Interactive UI with a custom production-grade CSS design system.
-- **Backend:** [Python 3](https://www.python.org/) — Business logic and data processing.
-- **Database:** [MySQL 8.0+](https://www.mysql.com/) — Relational storage with optimized indexing and referential integrity.
-- **Data Analysis:** [Pandas](https://pandas.pydata.org/) & [Plotly](https://plotly.com/) — Real-time KPI visualization and trend analysis.
-
-### Implementation Highlights
-- **Normalized Schema:** 7+ tables with M:N relationships for robust data integrity.
-- **Performance Optimized:** 20+ database indexes ensuring sub-50ms query response times.
-- **Role-Based Access Control:** Secure login system with differentiated permissions for administrators and safety officers.
-- **Responsive Design:** Mobile-first architecture with semantic CSS variables and premium typography.
+-   **Backend:** PHP 8.2+ (Strictly Typed)
+-   **Architecture:** Custom MVC (Model-View-Controller)
+-   **Frontend:** Tailwind CSS 3.0 & Chart.js
+-   **Database:** MySQL 8.0+ (PDO with Prepared Statements)
+-   **Security:** CSRF Protection, XSS Mitigation, and Session Management.
 
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
-- Python 3.8 or higher
-- MySQL Server 8.0+
-- Git
+-   PHP 8.2 or higher
+-   MySQL Server 8.0+
+-   Apache/Nginx (or use PHP built-in server for dev)
 
 ### 2. Installation
 ```bash
-# Clone the repository
 git clone https://github.com/asiimwe-dev/HEALTH-SAFETY-AND-ENVIRONMENT-DBMS.git
-cd HEALTH-SAFETY-AND-ENVIRONMENT-DBMS
-
-# Set up virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r files/requirements.txt
+cd HEALTH-SAFETY-AND-ENVIRONMENT-DBMS/php
 ```
 
 ### 3. Database Setup
 1. Create a MySQL database (e.g., `hse_db`).
-2. Import the production schema:
+2. Import the schema and sample data:
    ```bash
-   mysql -u [username] -p hse_db < files/hse_db.sql
+   mysql -u root -p hse_db < ../files/hse_db.sql
    ```
-3. Configure your credentials in a `.env` file or export them:
-   ```bash
-   export HSE_DB_HOST='localhost'
-   export HSE_DB_USER='your_user'
-   export HSE_DB_PASS='your_password'
-   export HSE_DB_NAME='hse_db'
-   ```
+3. Update `php/config/config.php` with your database credentials.
 
-### 4. Execution
+### 4. Local Execution
 ```bash
-streamlit run files/app.py
+php -S localhost:8000 -t public
 ```
+Access the system at `http://localhost:8000`.
 
 ## 🔐 Access & Security
-The system requires authentication to access the management dashboard. For development and testing purposes, the following demo credentials are provided:
-
 | Role | Username | Password |
 | :--- | :--- | :--- |
 | **HSE Administrator** | `admin` | `admin123` |
 | **HSE Manager** | `gilbert` | `hse2025` |
-| **Field Safety Officer** | `field_ops` | `ops2025` |
 
 ## 📂 Project Layout
 ```text
-├── docs/                # Technical documentation and deployment guides
-├── files/               # Core application source code
-│   ├── app.py           # Main Streamlit application entry point
-│   ├── hse_db.sql       # Relational database schema with sample data
-│   └── requirements.txt # Python dependency list
-├── .gitignore           # Version control exclusion rules
-├── LICENSE              # MIT License
-└── README.md            # Project documentation
+php/
+├── app/
+│   ├── Controllers/    # Routing & Business Logic
+│   ├── Models/         # Data Access Layer (PDO)
+│   ├── Core/           # Framework Engine (Database, Base classes)
+│   └── Views/          # UI Templates (Tailwind CSS)
+├── config/             # App Configuration
+├── public/             # Entry point & Assets
+└── docs/               # Detailed Technical Documentation
 ```
 
-## 📜 License
-This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software for both commercial and non-commercial purposes. See the `LICENSE` file for full details.
-
-## 🤝 Contributing
-Contributions are welcome and greatly appreciated! To contribute:
-1. **Fork** the repository.
-2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`).
-3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
-4. **Push** to the branch (`git push origin feature/AmazingFeature`).
-5. **Open** a Pull Request.
+## 📜 Documentation
+Comprehensive guides are available in the [docs/](docs/) directory:
+- [Architecture & Design](docs/ARCHITECTURE.md)
+- [Developer Guide](docs/DEVELOPER_GUIDE.md)
+- [Security Implementation](docs/SECURITY.md)
+- [User Manual](docs/USER_MANUAL.md)
 
 ---
-**Maintained by:** [Gilbert Asiimwe](https://github.com/asiimwe-dev) | Mbarara University of Science and Technology
+**Maintained by:** [Gilbert Asiimwe](https://github.com/asiimwe-dev)

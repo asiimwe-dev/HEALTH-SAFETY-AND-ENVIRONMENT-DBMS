@@ -1,4 +1,4 @@
-<?php include APP_ROOT . '/app/Views/inc/header.php'; ?>
+<?php require_once APP_ROOT . '/app/Views/inc/header.php'; ?>
 
 <div class="mb-8">
     <h2 class="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Data Entry</h2>
@@ -129,4 +129,4 @@
     <?php endif; ?>
 </div>
 
-<?php include APP_ROOT . '/app/Views/inc/footer.php'; ?>
+<?php require_once APP_ROOT . '/app/Views/inc/footer.php'; ?>
